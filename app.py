@@ -131,12 +131,28 @@ def dashboard():
         cursor = get_cursor(conn)
         cursor.execute('SELECT COUNT(*) as count FROM participants')
         participant_count = cursor.fetchone()['count']
-        return render_template('dashboard.html', participant_count=participant_count)
+
+        # Check if demo mode is enabled
+        cursor.execute("SELECT value FROM settings WHERE key = %s", ('demo_mode_enabled',))
+        demo_mode_row = cursor.fetchone()
+        demo_mode = demo_mode_row and demo_mode_row['value'] == 'true' if demo_mode_row else False
+
+        # Get disclaimer text if demo mode is on
+        disclaimer = None
+        if demo_mode:
+            cursor.execute("SELECT value FROM settings WHERE key = %s", ('demo_mode_disclaimer',))
+            disclaimer_row = cursor.fetchone()
+            disclaimer = disclaimer_row['value'] if disclaimer_row else None
+
+        return render_template('dashboard.html',
+                             participant_count=participant_count,
+                             demo_mode=demo_mode,
+                             disclaimer=disclaimer)
     except Exception as e:
         app.logger.error(f"Error in dashboard: {e}")
         if conn:
             return_connection(conn, error=True)
-        return render_template('dashboard.html', participant_count=0)
+        return render_template('dashboard.html', participant_count=0, demo_mode=False, disclaimer=None)
     finally:
         if conn:
             return_connection(conn)
@@ -326,35 +342,43 @@ def participants_list():
 @app.route('/trips')
 def trips_list():
     """View planned cave trips"""
-    conn = get_db_connection()
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
+        cursor.execute('''
+            SELECT * FROM trips
+            ORDER BY trip_date ASC, created_date ASC
+        ''')
+        trips = cursor.fetchall()
 
-    cursor = get_cursor(conn)
-    trips = cursor.execute('''
-        SELECT * FROM trips 
-        ORDER BY trip_date ASC, created_date ASC
-    ''').fetchall()
-    return_connection(conn)
-    
-    # Group trips by date
-    from datetime import datetime
-    trips_by_date = {}
-    for trip in trips:
-        if trip['trip_date']:
-            try:
-                trip_date = datetime.strptime(trip['trip_date'], '%Y-%m-%d')
-                date_key = trip_date.strftime('%Y-%m-%d')
-                date_label = trip_date.strftime('%A, %B %d, %Y')
-                
-                if date_key not in trips_by_date:
-                    trips_by_date[date_key] = {
-                        'date_label': date_label,
-                        'trips': []
-                    }
-                trips_by_date[date_key]['trips'].append(trip)
-            except ValueError:
-                pass
-    
-    return render_template('trips.html', trips_by_date=trips_by_date)
+        # Group trips by date
+        trips_by_date = {}
+        for trip in trips:
+            if trip['trip_date']:
+                try:
+                    trip_date = datetime.strptime(str(trip['trip_date']), '%Y-%m-%d')
+                    date_key = trip_date.strftime('%Y-%m-%d')
+                    date_label = trip_date.strftime('%A, %B %d, %Y')
+
+                    if date_key not in trips_by_date:
+                        trips_by_date[date_key] = {
+                            'date_label': date_label,
+                            'trips': []
+                        }
+                    trips_by_date[date_key]['trips'].append(trip)
+                except (ValueError, TypeError):
+                    pass
+
+        return render_template('trips.html', trips_by_date=trips_by_date)
+    except Exception as e:
+        app.logger.error(f"Error in trips_list: {e}")
+        if conn:
+            return_connection(conn, error=True)
+        return render_template('trips.html', trips_by_date={})
+    finally:
+        if conn:
+            return_connection(conn)
 
 @app.route('/admin/')
 def admin_dashboard():

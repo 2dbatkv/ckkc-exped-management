@@ -19,6 +19,15 @@
             </div>
         </header>
 
+        {% if demo_mode and disclaimer %}
+        <div class="demo-disclaimer">
+            <div class="disclaimer-icon">⚠️</div>
+            <div class="disclaimer-text">
+                <strong>DEMONSTRATION MODE:</strong> {{ disclaimer }}
+            </div>
+        </div>
+        {% endif %}
+
         <main class="dashboard-main">
             <div class="action-grid">
                 
