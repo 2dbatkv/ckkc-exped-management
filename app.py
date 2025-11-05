@@ -276,7 +276,7 @@ def register_submit():
          participation_days, eating_at_expedition, roppel_trips, crf_compass_agreement, skills, have_instruments,
          instruments_details, group_gear, group_gear_other_details, additional_info, waiver_acknowledged,
          waiver_acknowledged_timestamp)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        VALUES (%s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, NOW())
         ''', insert_data)
         
         conn.commit()
@@ -968,7 +968,7 @@ def api_cave_survey_stats():
     for cave in caves:
         cave_dict = dict(cave)
         cave_dict['survey_count'] = cursor.execute(
-            'SELECT COUNT(*) as count FROM surveys WHERE cave_id = ?', 
+            'SELECT COUNT(*) as count FROM surveys WHERE cave_id = %s', 
             (cave['cave_id'],)
         ).fetchone()['count']
         stats['caves'].append(cave_dict)
@@ -1256,7 +1256,7 @@ def survey_submit():
                 inclinometer_backsight, crf_compass_course, calibration_notes,
                 additional_equipment, survey_shots_json, raw_data,
                 instruments_crf_course, data_accuracy, created_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+            ) VALUES (%s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, NOW())
         ''', (
             cave_name, state, county, region, survey_date, fsb_number, area_in_cave,
             time_in, time_out, survey_objective, conditions, other_info,
@@ -1279,7 +1279,7 @@ def survey_submit():
         if cave_row:
             cave_id = cave_row['cave_id']
         else:
-            cursor.execute('INSERT INTO caves (name, location_text) VALUES (?, ?)', (cave_name, cave_location))
+            cursor.execute('INSERT INTO caves (name, location_text) VALUES (%s, %s)', (cave_name, cave_location))
             cave_id = cursor.lastrowid
         
         # Insert survey into professional schema
@@ -1287,7 +1287,7 @@ def survey_submit():
             INSERT INTO surveys (
                 cave_id, date, area_in_cave, objective, time_in, time_out,
                 conditions, survey_designation_raw, units_length, units_compass, units_clino
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'feet', 'degrees', 'degrees')
+            ) VALUES (%s, %s, % s, %s, % s, %s, % s, %s, 'feet', 'degrees', 'degrees')
         ''', (cave_id, survey_date, area_in_cave, survey_objective, time_in, time_out, conditions, 'Form Entry'))
         
         professional_survey_id = cursor.lastrowid
@@ -1299,7 +1299,7 @@ def survey_submit():
                     survey_id, sequence_in_page, station_from, station_to, distance,
                     fs_azimuth_deg, bs_azimuth_deg, fs_incline_deg, bs_incline_deg,
                     lrud_left, lrud_right, lrud_up, lrud_down, note
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (%s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s)
             ''', (
                 professional_survey_id, i + 1, shot['from_station'], shot['to_station'],
                 shot['distance'], shot['azimuth_fs'], shot['azimuth_bs'],
@@ -1324,13 +1324,13 @@ def survey_submit():
                 if person_row:
                     person_id = person_row['person_id']
                 else:
-                    cursor.execute('INSERT INTO people (full_name) VALUES (?)', (person_name,))
+                    cursor.execute('INSERT INTO people (full_name) VALUES (%s)', (person_name,))
                     person_id = cursor.lastrowid
                 
                 # Insert team member
                 cursor.execute('''
                     INSERT INTO survey_team (survey_id, person_id, display_name, role)
-                    VALUES (?, ?, ?, ?)
+                    VALUES (%s, %s, % s, %s)
                 ''', (professional_survey_id, person_id, person_name, role))
         
         conn.commit()
@@ -1419,7 +1419,7 @@ def admin_create_trip():
                 entry_time, exit_time, route_description, hazards, 
                 required_skills, required_equipment, max_participants, 
                 difficulty_level, notes, participants, status, created_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+            ) VALUES (%s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, % s, %s, NOW())
         ''', (
             trip_name, trip_date, cave_name, objective, leader_name,
             entry_time, exit_time, route_description, hazards,
@@ -1496,7 +1496,7 @@ def admin_update_trip(trip_id):
                 hazards = %s, required_skills = %s, required_equipment = %s, 
                 max_participants = %s, difficulty_level = %s, notes = %s, status = %s,
                 updated_date = NOW()
-            WHERE id = ?
+            WHERE id = %s
         ''', (
             trip_name, trip_date, cave_name, objective, leader_name,
             entry_time, exit_time, route_description, hazards,
@@ -1593,7 +1593,7 @@ def admin_update_trip_participants(trip_id):
         
         cursor = get_cursor(conn)
         cursor.execute(
-            'UPDATE trips SET participants = %s, updated_date = datetime("now") WHERE id = ?',
+            'UPDATE trips SET participants = %s, updated_date = datetime("now") WHERE id = %s',
             (json.dumps(participant_ids), trip_id)
         )
         conn.commit()
@@ -1955,7 +1955,7 @@ def update_settings():
                 cursor.execute('''
                     UPDATE settings 
                     SET value = %s, updated_date = NOW()
-                    WHERE key = ?
+                    WHERE key = %s
                 ''', (new_value, key))
                 updated_count += 1
         
@@ -2000,7 +2000,7 @@ def reset_settings():
             cursor.execute('''
                 UPDATE settings 
                 SET value = %s, updated_date = NOW()
-                WHERE key = ?
+                WHERE key = %s
             ''', (value, key))
         
         conn.commit()
