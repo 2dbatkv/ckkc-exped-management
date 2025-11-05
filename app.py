@@ -294,25 +294,34 @@ def register_submit():
 @app.route('/participants')
 def participants_list():
     """View registered participants"""
-    conn = get_db_connection()
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
+        cursor.execute('''
+            SELECT * FROM participants
+            ORDER BY registration_time DESC
+        ''')
+        participants = cursor.fetchall()
 
-    cursor = get_cursor(conn)
-    participants = cursor.execute('''
-    SELECT * FROM participants 
-    ORDER BY registration_time DESC
-    ''').fetchall()
-    return_connection(conn)
-    
-    # Parse JSON fields for display
-    participants_data = []
-    for p in participants:
-        participant_dict = dict(p)
-        participant_dict['participation_days'] = json.loads(p['participation_days'] or '[]')
-        participant_dict['skills'] = json.loads(p['skills'] or '[]')
-        participant_dict['group_gear'] = json.loads(p['group_gear'] or '[]')
-        participants_data.append(participant_dict)
-    
-    return render_template('participants.html', participants=participants_data)
+        # Parse JSON fields for display
+        participants_data = []
+        for p in participants:
+            participant_dict = dict(p)
+            participant_dict['participation_days'] = json.loads(p['participation_days'] or '[]')
+            participant_dict['skills'] = json.loads(p['skills'] or '[]')
+            participant_dict['group_gear'] = json.loads(p['group_gear'] or '[]')
+            participants_data.append(participant_dict)
+
+        return render_template('participants.html', participants=participants_data)
+    except Exception as e:
+        app.logger.error(f"Error in participants_list: {e}")
+        if conn:
+            return_connection(conn, error=True)
+        return render_template('participants.html', participants=[])
+    finally:
+        if conn:
+            return_connection(conn)
 
 @app.route('/trips')
 def trips_list():
