@@ -1,0 +1,27 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: ckkc-expedition-db
+    plan: starter
+    databaseName: expedition_db
+    user: ckkc_user
+
+  # Flask Web Application
+  - type: web
+    name: ckkc-expedition-web
+    runtime: python3
+    plan: starter
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 4 --timeout 120 wsgi:application
+    healthCheckPath: /health
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSCODE
+        value: expedition2025  # CHANGE THIS IN PRODUCTION
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ckkc-expedition-db
+          property: connectionString

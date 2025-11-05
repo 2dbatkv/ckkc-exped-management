@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cave Trips - CKKC October 2025 Expedition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .trips-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .trips-header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .trip-day {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .day-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .day-title {
+            font-size: 1.5rem;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .day-date {
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+        
+        .trips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .trip-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .trip-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .trip-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .trip-objective {
+            color: #4a5568;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .trip-details {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .trip-leader {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+        
+        .status-planned {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+        
+        .status-confirmed {
+            background: #c6f6d5;
+            color: #276749;
+        }
+        
+        .status-cancelled {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .notice-box {
+            background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
+            border: 2px solid #f6ad55;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .notice-box h3 {
+            color: #c05621;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .notice-box p {
+            color: #744210;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .trips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .trip-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="trips-container">
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+        
+        <header class="trips-header">
+            <h1>🗺️ Planned Cave Trips</h1>
+            <p>CKKC October 2025 Expedition • October 14-19, 2025</p>
+        </header>
+
+        <div class="notice-box">
+            <h3>⚠️ Important Notice</h3>
+            <p>All trip plans are preliminary and subject to change. Final trip assignments and confirmations will be made each morning based on conditions, participant skills, and expedition priorities.</p>
+        </div>
+
+        {% if trips_by_date %}
+            {% for date_key, date_data in trips_by_date.items() %}
+            <div class="trip-day">
+                <div class="day-header">
+                    <div class="day-title">{{ date_data.date_label.split(',')[0] }}</div>
+                    <div class="day-date">{{ date_data.date_label }}</div>
+                </div>
+                <div class="trips-grid">
+                    {% for trip in date_data.trips %}
+                    <div class="trip-card">
+                        <div class="trip-name">🗺️ {{ trip.trip_name }}</div>
+                        <div class="trip-objective">
+                            {% if trip.objective %}
+                                {{ trip.objective }}
+                            {% else %}
+                                Cave expedition trip at {{ trip.cave_name or 'location TBD' }}.
+                            {% endif %}
+                        </div>
+                        <div class="trip-details">
+                            <div><span class="trip-leader">Leader:</span> {{ trip.leader_name or 'TBD' }}</div>
+                            <div>Cave: {{ trip.cave_name or 'TBD' }}</div>
+                            {% if trip.entry_time and trip.exit_time %}
+                            <div>Time: {{ trip.entry_time }} - {{ trip.exit_time }}</div>
+                            {% endif %}
+                            <div>Difficulty: {{ (trip.difficulty_level or 'intermediate') | title }}</div>
+                            <div>Max Participants: {{ trip.max_participants or 6 }}</div>
+                            {% if trip.participants %}
+                                {% set participant_count = (trip.participants | from_json | length) if trip.participants != '[]' else 0 %}
+                                <div>Current Participants: {{ participant_count }}</div>
+                            {% endif %}
+                        </div>
+                        <span class="status-badge status-{{ trip.status or 'planned' }}">
+                            {{ (trip.status or 'planned') | title }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="trip-day">
+                <div class="day-header">
+                    <div class="day-title">No Trips Scheduled</div>
+                    <div class="day-date">Check back later for trip announcements</div>
+                </div>
+                <div class="trips-grid">
+                    <div class="trip-card">
+                        <div class="trip-name">🔄 Trip Planning in Progress</div>
+                        <div class="trip-objective">Trip leaders are currently planning expedition activities. Check back soon or contact expedition coordinators for updates.</div>
+                        <div class="trip-details">
+                            <div><span class="trip-leader">Status:</span> Planning Phase</div>
+                        </div>
+                        <span class="status-badge status-planned">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

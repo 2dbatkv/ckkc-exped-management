@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: ckkc_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: expedition_db
+      POSTGRES_USER: ckkc_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_in_production}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ckkc_user -d expedition_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Flask Application
+  web:
+    build: .
+    container_name: ckkc_web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://ckkc_user:${POSTGRES_PASSWORD:-changeme_in_production}@db:5432/expedition_db
+      FLASK_SECRET_KEY: ${FLASK_SECRET_KEY:-changeme_in_production}
+      ADMIN_PASSCODE: ${ADMIN_PASSCODE:-expedition2025}
+      FLASK_ENV: production
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./static:/app/static
+      - ./templates:/app/templates
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: ckkc_network

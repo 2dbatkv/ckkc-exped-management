@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - CKKC October 2025 Expedition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clean.css') }}">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e8ecf0;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e8ecf0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #5d6d7e;
+            box-shadow: 0 0 0 3px rgba(93, 109, 126, 0.1);
+        }
+        
+        .login-button {
+            width: 100%;
+            background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #5d6d7e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .flash-success {
+            background: #c6f6d5;
+            color: #276749;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🔐 Admin Access</h1>
+            <p>CKKC October 2025 Expedition</p>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="passcode">Admin Passcode</label>
+                <input type="password" id="passcode" name="passcode" required autofocus>
+            </div>
+            
+            <button type="submit" class="login-button">
+                Access Admin Dashboard
+            </button>
+        </form>
+        
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Main Site</a>
+    </div>
+</body>
+</html>

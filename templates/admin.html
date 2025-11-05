@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CKKC October 2025 Expedition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .logout-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #c53030 0%, #e53e3e 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-left: 15px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #5d6d7e;
+        }
+        
+        .stat-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #5d6d7e;
+            margin-bottom: 10px;
+        }
+        
+        .stat-breakdown {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+        
+        .breakdown-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .breakdown-label {
+            font-weight: 500;
+        }
+        
+        .breakdown-value {
+            font-weight: 600;
+            color: #5d6d7e;
+        }
+        
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .admin-action {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .admin-action:hover {
+            border-color: #5d6d7e;
+            transform: translateY(-3px);
+        }
+        
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #5d6d7e;
+        }
+        
+        .action-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .action-description {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid, .admin-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card, .admin-action {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+            <a href="{{ url_for('admin_logout') }}" class="logout-link">🚪 Logout</a>
+        </div>
+        
+        <header class="admin-header">
+            <div class="header-content">
+                <img src="{{ url_for('static', filename='cave.png') }}" alt="CKKC Logo" class="expedition-logo">
+                <div class="header-text">
+                    <h1>⚙️ Administration Dashboard</h1>
+                    <p>CKKC October 2025 Expedition Management</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">👥 Total Participants</div>
+                <div class="stat-value">{{ participant_count }}</div>
+                <div class="stat-breakdown">Registered cavers for the expedition</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">📅 Participation Days</div>
+                <div class="stat-breakdown">
+                    {% for day, count in participation_days_count.items() %}
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">{{ day|replace('_', ' ')|title }}</span>
+                        <span class="breakdown-value">{{ count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">🍽️ Eating at Expedition</div>
+                <div class="stat-breakdown">
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Eating at Expedition</span>
+                        <span class="breakdown-value">{{ eating_count.eating_yes or 0 }}</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">Not Eating at Expedition</span>
+                        <span class="breakdown-value">{{ eating_count.eating_no or 0 }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">🧗 Skills Distribution</div>
+                <div class="stat-breakdown">
+                    {% for skill, count in skills_count.items() %}
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">{{ skill|replace('_', ' ')|title }}</span>
+                        <span class="breakdown-value">{{ count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-actions">
+            <div class="admin-action" onclick="window.open('/admin/export/registration-data', '_blank')">
+                <div class="action-icon">📊</div>
+                <div class="action-title">Export Registration Data</div>
+                <div class="action-description">Download participant registration data as CSV</div>
+            </div>
+            
+            <div class="admin-action" onclick="window.open('/admin/export/cave-survey-data', '_blank')">
+                <div class="action-icon">📈</div>
+                <div class="action-title">Export Cave Survey Data</div>
+                <div class="action-description">Download cave survey measurements and data</div>
+            </div>
+
+            <div class="admin-action" onclick="window.open('/admin/export/trip-data', '_blank')">
+                <div class="action-icon">🗺️</div>
+                <div class="action-title">Export Trip Data</div>
+                <div class="action-description">Download planned cave trips and expedition data</div>
+            </div>
+
+            <div class="admin-action" onclick="window.open('/admin/backup-databases', '_blank')">
+                <div class="action-icon">💾</div>
+                <div class="action-title">Backup Both Databases</div>
+                <div class="action-description">Download complete backup of registration and cave survey databases</div>
+            </div>
+            
+            <div class="admin-action" onclick="window.open('/admin/registration-data', '_blank')">
+                <div class="action-icon">📋</div>
+                <div class="action-title">View/Edit Registration Data</div>
+                <div class="action-description">View and edit participant registration information</div>
+            </div>
+            
+            <div class="admin-action" onclick="window.open('/admin/cave-survey-data', '_blank')">
+                <div class="action-icon">📐</div>
+                <div class="action-title">View/Edit Cave Survey Data</div>
+                <div class="action-description">View and edit cave survey measurements and data</div>
+            </div>
+            
+            <div class="admin-action" onclick="window.open('/admin/trips', '_blank')">
+                <div class="action-icon">🗺️</div>
+                <div class="action-title">Manage Trips</div>
+                <div class="action-description">Create, assign, and track cave expedition trips</div>
+            </div>
+            
+            <div class="admin-action" onclick="window.open('/admin/trips/new', '_blank')">
+                <div class="action-icon">🎯</div>
+                <div class="action-title">Enter Cave Trip Objectives</div>
+                <div class="action-description">Plan objectives, routes, hazards, and requirements</div>
+            </div>
+            
+            <div class="admin-action" onclick="window.open('/admin/settings', '_blank')">
+                <div class="action-icon">⚙️</div>
+                <div class="action-title">System Settings</div>
+                <div class="action-description">Configure expedition parameters and database settings</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

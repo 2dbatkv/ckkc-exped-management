@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cave Survey Data Entry - CKKC October 2025 Expedition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .survey-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .survey-header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .survey-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f8f9fb;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #4a5568;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+            color: white;
+        }
+        
+        .tab-button.locked {
+            background: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .tab-button.locked:hover {
+            background: #e2e8f0;
+            transform: none;
+        }
+        
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .sub-tabs {
+            display: flex;
+            background: #f8f9fb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .sub-tab-button {
+            flex: 1;
+            padding: 10px 15px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.2s ease;
+        }
+        
+        .sub-tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .sub-tab-content {
+            display: none;
+        }
+        
+        .sub-tab-content.active {
+            display: block;
+        }
+        
+        .shots-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .shots-table th,
+        .shots-table td {
+            padding: 8px 10px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .shots-table th {
+            background: #f8f9fb;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .shots-table input {
+            width: 80px;
+            padding: 4px 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .shots-table input[name*="notes"] {
+            width: 120px;
+            text-align: left;
+        }
+        
+        .add-shot-btn,
+        .delete-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .add-shot-btn {
+            background: #10b981;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .add-shot-btn:hover {
+            background: #059669;
+        }
+        
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+        
+        .raw-data-area {
+            width: 100%;
+            min-height: 300px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .submit-section {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .commit-section {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 20px;
+        }
+        
+        .commit-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+        
+        .commit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .commit-status {
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .commit-status.success {
+            color: #059669;
+        }
+        
+        .commit-status.error {
+            color: #dc2626;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-success,
+        .flash-error,
+        .flash-info {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .flash-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .flash-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        .flash-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .survey-tabs {
+                flex-direction: column;
+            }
+            
+            .shots-table {
+                font-size: 12px;
+            }
+            
+            .shots-table input {
+                width: 60px;
+            }
+        }
+        
+        .test-data-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .test-data-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .commit-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .commit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .review-submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .review-submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .review-submit-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .review-editor-container {
+            margin-bottom: 20px;
+        }
+        
+        .review-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #f8f9fa;
+            resize: vertical;
+        }
+        
+        .review-editor:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .review-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .refresh-btn, .parse-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .refresh-btn:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+        
+        .parse-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .parse-btn:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+        
+        .final-checks {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .big-submit-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .big-submit-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 25px 50px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .big-submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #34ce57 0%, #2dd4aa 100%);
+        }
+        
+        .big-submit-btn small {
+            display: block;
+            font-size: 12px;
+            font-weight: normal;
+            margin-top: 8px;
+            opacity: 0.9;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="survey-container">
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+        
+        <header class="survey-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1>📐 Cave Survey Data Entry</h1>
+                    <p>CKKC October 2025 Expedition</p>
+                </div>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('survey_submit') }}" id="surveyForm">
+            <!-- Survey Entry Section -->
+            <div id="survey-entry">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>📊 Cave Survey Data Entry</h2>
+                    <div>
+                        <button type="button" onclick="loadTestData()" class="test-data-btn">🧪 Load Test Data</button>
+                        <button type="button" onclick="commitFormData()" class="commit-btn" style="margin-left: 10px;">💾 Commit Changes</button>
+                        <button type="button" id="reviewSubmitBtn" onclick="goToReviewSubmit()" class="review-submit-btn" style="margin-left: 10px;" disabled>✅ Review & Submit</button>
+                    </div>
+                </div>
+                
+                <!-- Survey Trip Information Section -->
+                <div class="section-container">
+                    <h3>📍 Survey Trip Information</h3>
+                
+                <!-- Cave and Location Information -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cave_name">Cave Name *</label>
+                        <input type="text" id="cave_name" name="cave_name" placeholder="Enter cave name or '-' if unknown">
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <select id="state" name="state" required>
+                            <option value="">Select State</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="AL">Alabama</option>
+                            <option value="GA">Georgia</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="county">County</label>
+                        <input type="text" id="county" name="county" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="region">Region</label>
+                        <input type="text" id="region" name="region">
+                    </div>
+                    <div class="form-group">
+                        <label for="survey_date">Survey Date *</label>
+                        <input type="date" id="survey_date" name="survey_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="fsb_number">FSB Number</label>
+                        <input type="text" id="fsb_number" name="fsb_number" placeholder="Field Survey Book number (optional)">
+                    </div>
+                    <div class="form-group">
+                        <label for="area_in_cave">Area in Cave</label>
+                        <input type="text" id="area_in_cave" name="area_in_cave" placeholder="e.g., Main passage, Side branch">
+                    </div>
+                    <div class="form-group">
+                        <label for="time_in">Time In</label>
+                        <input type="time" id="time_in" name="time_in">
+                    </div>
+                    <div class="form-group">
+                        <label for="time_out">Time Out</label>
+                        <input type="time" id="time_out" name="time_out">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="survey_objective">Survey Objective</label>
+                        <textarea id="survey_objective" name="survey_objective" placeholder="Purpose and goals of this survey"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="conditions">Conditions</label>
+                        <textarea id="conditions" name="conditions" placeholder="Weather, water level, cave conditions"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="other_info">Other Information</label>
+                        <textarea id="other_info" name="other_info" placeholder="Additional information"></textarea>
+                    </div>
+                </div>
+
+                <!-- Survey Team -->
+                <h3>👥 Survey Team</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="book_sketch_person">Book/Sketch Person *</label>
+                        <input type="text" id="book_sketch_person" name="book_sketch_person" placeholder="Name or '-'">
+                    </div>
+                    <div class="form-group">
+                        <label for="instrument_reader">Instrument Reader *</label>
+                        <input type="text" id="instrument_reader" name="instrument_reader" placeholder="Name or '-'">
+                    </div>
+                    <div class="form-group">
+                        <label for="tape_person">Tape Person *</label>
+                        <input type="text" id="tape_person" name="tape_person" placeholder="Name or '-'">
+                    </div>
+                    <div class="form-group">
+                        <label for="point_person">Point Person *</label>
+                        <input type="text" id="point_person" name="point_person" placeholder="Name or '-'">
+                    </div>
+                    <div class="form-group">
+                        <label for="trip_leader">Trip/Survey Leader *</label>
+                        <input type="text" id="trip_leader" name="trip_leader" placeholder="Name or '-'">
+                    </div>
+                    <div class="form-group">
+                        <label for="other_team_members">Other Team Members</label>
+                        <textarea id="other_team_members" name="other_team_members" placeholder="Additional team members and their roles"></textarea>
+                    </div>
+                </div>
+
+                <!-- Instruments -->
+                <h3>🧭 Instruments</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="compass_id">Compass ID *</label>
+                        <input type="text" id="compass_id" name="compass_id" placeholder="ID or '-'">
+                    </div>
+                    <div class="form-group">
+                        <label for="compass_frontsight">Compass Frontsight Reading (>180°)</label>
+                        <input type="number" id="compass_frontsight" name="compass_frontsight" min="181" max="360" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="compass_backsight">Compass Backsight Reading (<180°)</label>
+                        <input type="number" id="compass_backsight" name="compass_backsight" min="0" max="179" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="inclinometer_id">Inclinometer ID *</label>
+                        <input type="text" id="inclinometer_id" name="inclinometer_id" placeholder="ID or '-'">
+                    </div>
+                    <div class="form-group">
+                        <label for="inclinometer_frontsight">Inclinometer Frontsight</label>
+                        <input type="number" id="inclinometer_frontsight" name="inclinometer_frontsight" min="-90" max="90" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="inclinometer_backsight">Inclinometer Backsight</label>
+                        <input type="number" id="inclinometer_backsight" name="inclinometer_backsight" min="-90" max="90" step="0.1">
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="crf_compass_course" name="crf_compass_course" required>
+                    <label for="crf_compass_course">I confirm that these instruments were shot on the CRF Compass Course at Hamilton Valley</label>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="calibration_notes">Calibration Notes</label>
+                        <textarea id="calibration_notes" name="calibration_notes" placeholder="Instrument calibration details"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="additional_equipment">Additional Equipment</label>
+                        <textarea id="additional_equipment" name="additional_equipment" placeholder="Other equipment used"></textarea>
+                    </div>
+                </div>
+                </div>
+                
+                <!-- Survey Data Entry Section -->
+                <div class="section-container">
+                    <h3>📊 Survey Data Entry</h3>
+                    <p>Enter your cave survey measurements using either table entry or raw data format.</p>
+                
+                <!-- Sub-tabs for Survey Shots -->
+                <div class="sub-tabs">
+                    <button type="button" class="sub-tab-button active" onclick="showSubTab('table-entry')">Table Entry</button>
+                    <button type="button" class="sub-tab-button" onclick="showSubTab('raw-data-entry')">Raw Data Entry</button>
+                </div>
+
+                <!-- Table Entry Sub-tab -->
+                <div id="table-entry" class="sub-tab-content active">
+                    <button type="button" class="add-shot-btn" onclick="addShotRow()">+ Add Shot</button>
+                    <div style="overflow-x: auto;">
+                        <table class="shots-table" id="shotsTable">
+                            <thead>
+                                <tr>
+                                    <th>From Station</th>
+                                    <th>To Station</th>
+                                    <th>Distance (ft)</th>
+                                    <th>Azimuth FS (°)</th>
+                                    <th>Azimuth BS (°)</th>
+                                    <th>Inclination FS (°)</th>
+                                    <th>Inclination BS (°)</th>
+                                    <th>Left</th>
+                                    <th>Right</th>
+                                    <th>Up</th>
+                                    <th>Down</th>
+                                    <th>Notes</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="text" name="from_station[]" placeholder="A1"></td>
+                                    <td><input type="text" name="to_station[]" placeholder="A2"></td>
+                                    <td><input type="number" name="distance[]" step="0.01" min="0"></td>
+                                    <td><input type="number" name="azimuth_fs[]" step="0.1" min="0" max="360"></td>
+                                    <td><input type="number" name="azimuth_bs[]" step="0.1" min="0" max="360"></td>
+                                    <td><input type="number" name="inclination_fs[]" step="0.1" min="-90" max="90"></td>
+                                    <td><input type="number" name="inclination_bs[]" step="0.1" min="-90" max="90"></td>
+                                    <td><input type="number" name="left[]" step="0.01" min="0"></td>
+                                    <td><input type="number" name="right[]" step="0.01" min="0"></td>
+                                    <td><input type="number" name="up[]" step="0.01" min="0"></td>
+                                    <td><input type="number" name="down[]" step="0.01" min="0"></td>
+                                    <td><input type="text" name="notes[]" placeholder="Notes"></td>
+                                    <td><button type="button" class="delete-btn" onclick="deleteShotRow(this)">Delete</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Raw Data Entry Sub-tab -->
+                <div id="raw-data-entry" class="sub-tab-content">
+                    <div class="form-group">
+                        <label for="raw_data">Raw Survey Data</label>
+                        <p>Enter survey data as FromStation ToStation Distance FrontsightAzimuth BacksightAzimuth FrontsightInclination BacksightInclination Left Right Up Down Notes. Changes here will sync with the table above.<br>
+                        Example data: A1 A2 12.45 45.5 225.2 5.0 -5.2 3 2 5 8 Beginning of passage</p>
+                        <textarea id="raw_data" name="raw_data" class="raw-data-area" 
+                                placeholder="Example format:&#10;A1 A2 12.45 45.5 225.2 5.0 -5.2 3 2 5 8 Beginning of passage&#10;A2 A3 8.30 135.0 315.1 -10.5 10.3 2 1 4 6 Narrow crawl section&#10;&#10;Format: FROM TO DISTANCE AZIMUTH_FS AZIMUTH_BS INCLINATION_FS INCLINATION_BS LEFT RIGHT UP DOWN NOTES"></textarea>
+                    </div>
+                    
+                    <div class="commit-section">
+                        <button type="button" class="commit-btn" onclick="commitRawData()">💾 Commit Raw Data</button>
+                        <span id="rawDataStatus" class="commit-status"></span>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <!-- Review & Submit Section - Separate from form, accessed via button -->
+        <div id="review-submit" style="display: none; background: white !important; border: 2px solid #e2e8f0 !important; border-radius: 15px; padding: 30px; margin: 20px auto; max-width: 1200px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); min-height: 600px; position: relative; z-index: 9999;">
+            <button type="button" onclick="goBackToEntry()" class="back-link" style="display: inline-block; margin-bottom: 20px; background: #667eea; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 16px;">← Back to Data Entry</button>
+            <h2 style="color: #2d3748 !important; margin-bottom: 20px; font-size: 28px;">✅ Review & Submit Survey Data</h2>
+            <p style="margin-bottom: 20px; color: #666; font-size: 16px;">Review and edit your complete survey data below. Make any final changes before submitting.</p>
+
+            <div class="review-editor-container" style="margin-bottom: 20px;">
+                <textarea id="reviewEditor" class="review-editor" style="width: 100%; min-height: 400px; padding: 20px; border: 2px solid #333; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 14px; background: #f8f9fa !important; color: #000 !important;" placeholder="Complete your survey data in the previous section, then click 'Commit Changes' to see your data here for final review and editing..."></textarea>
+            </div>
+
+            <div class="review-controls" style="margin-bottom: 20px;">
+                <button type="button" onclick="refreshReviewData()" class="refresh-btn" style="padding: 10px 20px; margin-right: 10px; background: #4299e1; color: white; border: none; border-radius: 8px; cursor: pointer;">🔄 Refresh from Form</button>
+                <button type="button" onclick="parseReviewData()" class="parse-btn" style="padding: 10px 20px; background: #48bb78; color: white; border: none; border-radius: 8px; cursor: pointer;">⬅️ Update Form from Editor</button>
+            </div>
+
+            <div class="final-checks" style="margin-bottom: 30px; background: #fff9e6; padding: 20px; border-radius: 8px; border: 2px solid #fbbf24;">
+                <div class="checkbox-group" style="margin-bottom: 15px;">
+                    <input type="checkbox" id="instruments_crf_course" name="instruments_crf_course" style="margin-right: 10px; width: 20px; height: 20px;">
+                    <label for="instruments_crf_course" style="font-size: 16px; color: #333;">Instruments read on CRF Compass Course</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="data_accuracy" name="data_accuracy" required style="margin-right: 10px; width: 20px; height: 20px;">
+                    <label for="data_accuracy" style="font-size: 16px; color: #333; font-weight: 600;">I confirm the accuracy of all survey data *</label>
+                </div>
+            </div>
+
+            <div class="big-submit-section" style="text-align: center;">
+                <button type="button" onclick="submitSurveyData()" class="big-submit-btn" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; font-size: 24px; font-weight: 700; padding: 30px 60px; border: none; border-radius: 15px; cursor: pointer; box-shadow: 0 10px 30px rgba(72, 187, 120, 0.3); transition: all 0.3s ease;">
+                    🚀 SUBMIT SURVEY DATA TO DATABASE
+                    <br><small style="font-size: 14px; font-weight: 400;">This will permanently save your survey to the database</small>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let shotCount = 1;
+        let committedData = {
+            tripInfo: null,
+            surveyShots: null,
+            rawData: null
+        };
+
+        function showTab(tabName) {
+            console.log('showTab called with:', tabName);
+
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            const tabElement = document.getElementById(tabName);
+            if (tabElement) {
+                tabElement.classList.add('active');
+                console.log('Tab element found and activated:', tabName);
+            } else {
+                console.error('Tab element not found:', tabName);
+            }
+
+            // Add active class to clicked tab button
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            // Update review when switching to review tab
+            if (tabName === 'review-submit') {
+                console.log('Calling updateReviewEditor...');
+                updateReviewEditor();
+            }
+        }
+        
+        function loadTestData() {
+            // Cave Survey Trip Information
+            document.getElementById('cave_name').value = 'Mammoth Cave System - Wild Cave Tour Route';
+            document.getElementById('state').value = 'KY';
+            document.getElementById('county').value = 'Edmonson County';
+            document.getElementById('survey_date').value = '2025-10-15';
+            document.getElementById('area_in_cave').value = 'Historic Tour Route - New Discovery Branch';
+            document.getElementById('survey_objective').value = 'Map newly discovered passage connecting to Gothic Avenue with detailed measurements for conservation planning';
+            
+            // Survey Team Information
+            document.getElementById('book_sketch_person').value = 'Alex Rodriguez';
+            document.getElementById('instrument_reader').value = 'Sarah Chen';
+            document.getElementById('tape_person').value = 'Mike Thompson';
+            document.getElementById('point_person').value = 'Jessica Wu';
+            document.getElementById('trip_leader').value = 'David Park';
+            
+            // Instrumentation Information
+            document.getElementById('compass_id').value = 'SUUNTO KB-14/360R';
+            document.getElementById('compass_frontsight').value = '0.5';
+            document.getElementById('compass_backsight').value = '0.3';
+            document.getElementById('inclinometer_id').value = 'SUUNTO PM-5/360 PC';
+            document.getElementById('inclinometer_frontsight').value = '0.25';
+            document.getElementById('inclinometer_backsight').value = '0.25';
+            
+            // Check survey standards
+            document.getElementById('crf_compass_course').checked = true;
+            document.getElementById('data_accuracy').checked = true;
+            
+            // Clear existing shots and add comprehensive test data
+            const shotsTable = document.getElementById('shotsTable').getElementsByTagName('tbody')[0];
+            shotsTable.innerHTML = '';
+            
+            // Add multiple test shots representing a realistic cave survey
+            const testShots = [
+                ['ENT1', 'A1', '8.2', '127.5', '307.0', '12.0', '-12.5', '2.1', '1.8', '3.5', '1.2', 'Cave entrance, large opening'],
+                ['A1', 'A2', '15.7', '089.0', '269.5', '8.5', '-8.0', '4.2', '3.1', '2.8', '6.1', 'Main passage, breakdown floor'],
+                ['A2', 'A3', '12.1', '045.5', '225.0', '-5.0', '5.5', '1.9', '2.4', '4.0', '3.2', 'Passage narrows, flowstone walls'],
+                ['A3', 'A4', '18.3', '112.0', '292.5', '15.5', '-15.0', '0.8', '1.1', '1.8', '4.7', 'Low crawl, tight passage'],
+                ['A4', 'A5', '9.6', '078.5', '258.0', '3.0', '-3.5', '3.6', '2.9', '5.2', '2.1', 'Opens to chamber'],
+                ['A5', 'A6', '22.4', '156.0', '336.5', '22.0', '-21.5', '7.8', '8.2', '12.5', '1.4', 'Large chamber, Cathedral Room'],
+                ['A6', 'A7', '14.8', '201.5', '021.0', '-8.5', '9.0', '2.3', '1.7', '3.1', '8.9', 'Descending passage'],
+                ['A7', 'A8', '11.2', '267.0', '087.5', '18.0', '-17.5', '1.2', '0.9', '2.6', '4.3', 'Steep climb, handline recommended'],
+                ['A8', 'A9', '16.9', '334.5', '154.0', '2.5', '-2.0', '4.1', '3.8', '6.7', '3.6', 'Level walking passage'],
+                ['A9', 'A10', '13.5', '298.0', '118.5', '-12.0', '12.5', '2.8', '3.4', '4.2', '7.1', 'Connection to known passage system']
+            ];
+            
+            testShots.forEach(shot => {
+                addShotRow();
+                const rows = shotsTable.getElementsByTagName('tr');
+                const lastRow = rows[rows.length - 1];
+                const inputs = lastRow.getElementsByTagName('input');
+                
+                if (inputs.length >= 12) {
+                    inputs[0].value = shot[0];  // from_station
+                    inputs[1].value = shot[1];  // to_station
+                    inputs[2].value = shot[2];  // distance
+                    inputs[3].value = shot[3];  // azimuth_fs
+                    inputs[4].value = shot[4];  // azimuth_bs
+                    inputs[5].value = shot[5];  // inclination_fs
+                    inputs[6].value = shot[6];  // inclination_bs
+                    inputs[7].value = shot[7];  // left
+                    inputs[8].value = shot[8];  // right
+                    inputs[9].value = shot[9];  // up
+                    inputs[10].value = shot[10]; // down
+                    inputs[11].value = shot[11]; // notes
+                }
+            });
+            
+            // Save the test data to localStorage
+            saveFormData();
+            
+            // Update the review tab
+            updateReviewEditor();
+            
+            // Show confirmation
+            alert('🧪 Test data loaded successfully!\\n\\n✅ Cave survey trip information\\n✅ Complete survey team\\n✅ Instrumentation details\\n✅ 10 realistic survey shots\\n\\nYou can now edit the data or proceed to review and submit.');
+        }
+        
+        function commitFormData() {
+            // Save all current form data to localStorage first
+            saveFormData();
+
+            // Sync table to raw data to preserve table entries
+            tableToRaw();
+
+            // Update the review text area with formatted data
+            updateReviewEditor();
+
+            // Enable the Review & Submit button
+            const reviewBtn = document.getElementById('reviewSubmitBtn');
+            if (reviewBtn) {
+                reviewBtn.disabled = false;
+                console.log('Review & Submit button enabled');
+            }
+
+            // Show confirmation
+            alert('💾 Form data committed successfully!\\n\\n✅ All form data saved to localStorage\\n✅ Table and raw data synchronized\\n✅ Review editor updated\\n\\n👉 Click "Review & Submit" button to proceed.');
+        }
+
+        function goToReviewSubmit() {
+            console.log('goToReviewSubmit called');
+
+            // Make sure review data is updated
+            updateReviewEditor();
+
+            // DON'T hide survey-entry since review-submit is inside it!
+            // Instead, hide all the CHILDREN of survey-entry except review-submit
+            const surveyEntry = document.getElementById('survey-entry');
+            if (surveyEntry) {
+                // Hide all direct children except review-submit
+                Array.from(surveyEntry.children).forEach(child => {
+                    if (child.id !== 'review-submit') {
+                        child.style.display = 'none';
+                        console.log('Hiding child:', child.tagName, child.className || child.id);
+                    }
+                });
+            }
+
+            // Also hide the header and back link (outside survey-entry)
+            const surveyHeader = document.querySelector('.survey-header');
+            const backLink = document.querySelector('.survey-container > .back-link');
+            if (surveyHeader) {
+                surveyHeader.style.display = 'none';
+                console.log('Survey header hidden');
+            }
+            if (backLink) {
+                backLink.style.display = 'none';
+                console.log('Back link hidden');
+            }
+
+            // Show review submit section with aggressive visibility
+            const reviewSection = document.getElementById('review-submit');
+            console.log('Review section element:', reviewSection);
+            if (reviewSection) {
+                console.log('Review section computed display BEFORE:', window.getComputedStyle(reviewSection).display);
+                console.log('Review section offset height BEFORE:', reviewSection.offsetHeight);
+                console.log('Review section offset width BEFORE:', reviewSection.offsetWidth);
+
+                // Force display with multiple style attributes and explicit dimensions
+                reviewSection.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important; width: 1200px !important; min-height: 800px !important; background: white !important; border: 2px solid #e2e8f0 !important; padding: 30px !important; margin: 20px auto !important; position: relative !important; z-index: 9999 !important;');
+
+                // Double-check by also setting via style property
+                reviewSection.style.display = 'block';
+                reviewSection.style.visibility = 'visible';
+                reviewSection.style.opacity = '1';
+                reviewSection.style.width = '1200px';
+                reviewSection.style.minHeight = '800px';
+
+                console.log('Review section computed display AFTER:', window.getComputedStyle(reviewSection).display);
+                console.log('Review section computed width AFTER:', window.getComputedStyle(reviewSection).width);
+                console.log('Review section computed height AFTER:', window.getComputedStyle(reviewSection).height);
+                console.log('Review section offset height AFTER:', reviewSection.offsetHeight);
+                console.log('Review section offset width AFTER:', reviewSection.offsetWidth);
+                console.log('Review section background:', window.getComputedStyle(reviewSection).background);
+                console.log('Review section position:', reviewSection.getBoundingClientRect());
+
+                // Check parent visibility
+                console.log('Parent element:', reviewSection.parentElement);
+                console.log('Parent display:', window.getComputedStyle(reviewSection.parentElement).display);
+                console.log('Parent visibility:', window.getComputedStyle(reviewSection.parentElement).visibility);
+                console.log('Parent dimensions:', reviewSection.parentElement.offsetWidth, reviewSection.parentElement.offsetHeight);
+
+                // Verify textarea has content
+                const textarea = document.getElementById('reviewEditor');
+                if (textarea) {
+                    console.log('Textarea found, value length:', textarea.value.length);
+                    console.log('First 100 chars:', textarea.value.substring(0, 100));
+
+                    // Force textarea visibility too
+                    textarea.style.display = 'block';
+                    textarea.style.visibility = 'visible';
+                } else {
+                    console.error('Textarea not found!');
+                }
+            } else {
+                console.error('Review section not found!');
+            }
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function goBackToEntry() {
+            // Show all children of survey-entry again
+            const surveyEntry = document.getElementById('survey-entry');
+            if (surveyEntry) {
+                Array.from(surveyEntry.children).forEach(child => {
+                    if (child.id !== 'review-submit') {
+                        child.style.display = '';  // Reset to default
+                    }
+                });
+            }
+
+            // Show the header and back link
+            const surveyHeader = document.querySelector('.survey-header');
+            const backLink = document.querySelector('.survey-container > .back-link');
+            if (surveyHeader) {
+                surveyHeader.style.display = 'block';
+            }
+            if (backLink) {
+                backLink.style.display = 'inline-block';
+            }
+
+            // Hide review submit section
+            document.getElementById('review-submit').style.display = 'none';
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+
+            console.log('Returned to data entry');
+        }
+
+        function submitSurveyData() {
+            console.log('submitSurveyData called');
+
+            // Check if data accuracy checkbox is checked
+            const dataAccuracyCheckbox = document.getElementById('data_accuracy');
+            if (!dataAccuracyCheckbox.checked) {
+                alert('⚠️ Please confirm the accuracy of your survey data before submitting.');
+                return;
+            }
+
+            // Get the review editor content
+            const reviewEditor = document.getElementById('reviewEditor');
+            if (!reviewEditor || !reviewEditor.value.trim()) {
+                alert('⚠️ No survey data to submit. Please complete the survey form first.');
+                return;
+            }
+
+            // Update the hidden raw_data field in the form with the review editor content
+            const rawDataField = document.getElementById('raw_data');
+            if (rawDataField) {
+                rawDataField.value = reviewEditor.value;
+                console.log('Raw data field updated with', reviewEditor.value.length, 'characters');
+            }
+
+            // Get the instruments_crf_course checkbox value
+            const crfCheckbox = document.getElementById('instruments_crf_course');
+
+            // Submit the form
+            const surveyForm = document.getElementById('surveyForm');
+            if (surveyForm) {
+                console.log('Submitting survey form...');
+
+                // Clear localStorage after successful submission
+                clearSavedData();
+
+                surveyForm.submit();
+            } else {
+                console.error('Survey form not found!');
+                alert('❌ Error: Could not find survey form to submit.');
+            }
+        }
+        
+        function unlockTab(tabName) {
+            const tabButton = document.getElementById('tab-' + tabName);
+            if (tabButton) {
+                tabButton.classList.remove('locked');
+                // Update icon from lock to checkmark or appropriate icon
+                if (tabName === 'survey-data') {
+                    tabButton.innerHTML = '📊 Cave Survey Data';
+                } else if (tabName === 'review-submit') {
+                    tabButton.innerHTML = '✅ Review & Submit';
+                }
+            }
+        }
+
+        function showSubTab(tabName) {
+            // Save current form data before switching
+            saveFormData();
+            
+            // Determine current active tab to know how to sync
+            const currentActiveTab = document.querySelector('.sub-tab-content.active');
+            const currentTabName = currentActiveTab ? currentActiveTab.id : '';
+            
+            // Sync data based on which tab we're leaving
+            if (currentTabName === 'table-entry' && tabName === 'raw-data-entry') {
+                // Moving from table to raw - sync table data to raw
+                tableToRaw();
+            } else if (currentTabName === 'raw-data-entry' && tabName === 'table-entry') {
+                // Moving from raw to table - sync raw data to table
+                rawToTable();
+            }
+            
+            // Hide all sub-tab contents
+            document.querySelectorAll('.sub-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all sub-tab buttons
+            document.querySelectorAll('.sub-tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected sub-tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked sub-tab button
+            event.target.classList.add('active');
+            
+            // Save data after tab switch to preserve the sync
+            setTimeout(() => {
+                saveFormData();
+            }, 100);
+        }
+
+        function addShotRow() {
+            const tbody = document.querySelector('#shotsTable tbody');
+            const newRow = document.createElement('tr');
+            shotCount++;
+            
+            newRow.innerHTML = `
+                <td><input type="text" name="from_station[]" placeholder="A${shotCount}"></td>
+                <td><input type="text" name="to_station[]" placeholder="A${shotCount + 1}"></td>
+                <td><input type="number" name="distance[]" step="0.01" min="0"></td>
+                <td><input type="number" name="azimuth_fs[]" step="0.1" min="0" max="360"></td>
+                <td><input type="number" name="azimuth_bs[]" step="0.1" min="0" max="360"></td>
+                <td><input type="number" name="inclination_fs[]" step="0.1" min="-90" max="90"></td>
+                <td><input type="number" name="inclination_bs[]" step="0.1" min="-90" max="90"></td>
+                <td><input type="number" name="left[]" step="0.01" min="0"></td>
+                <td><input type="number" name="right[]" step="0.01" min="0"></td>
+                <td><input type="number" name="up[]" step="0.01" min="0"></td>
+                <td><input type="number" name="down[]" step="0.01" min="0"></td>
+                <td><input type="text" name="notes[]" placeholder="Notes"></td>
+                <td><button type="button" class="delete-btn" onclick="deleteShotRow(this)">Delete</button></td>
+            `;
+            
+            tbody.appendChild(newRow);
+            
+            // Add event listeners to sync with raw data
+            addSyncListeners(newRow);
+        }
+
+        function deleteShotRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+            tableToRaw();
+        }
+
+        function addSyncListeners(row) {
+            const inputs = row.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', tableToRaw);
+            });
+        }
+
+        function tableToRaw() {
+            const rows = document.querySelectorAll('#shotsTable tbody tr');
+            let rawData = '';
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value || inputs[1].value) { // If at least station names are filled
+                    const values = [];
+                    // Get all field values except the last input (which is part of the delete button)
+                    for (let i = 0; i < inputs.length - 1; i++) {
+                        if (i < 11) { // Numeric fields (0-10: from, to, distance, azimuth_fs, azimuth_bs, incl_fs, incl_bs, left, right, up, down)
+                            values.push(inputs[i].value || '0');
+                        } else { // Notes field (11)
+                            values.push(inputs[i].value || '');
+                        }
+                    }
+                    rawData += values.join(' ') + '\\n';
+                }
+            });
+            
+            document.getElementById('raw_data').value = rawData;
+        }
+
+        function rawToTable() {
+            const rawData = document.getElementById('raw_data').value;
+            const lines = rawData.trim().split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
+            
+            // Clear existing table rows
+            const tbody = document.querySelector('#shotsTable tbody');
+            tbody.innerHTML = '';
+            shotCount = 0;
+            
+            lines.forEach((line, index) => {
+                // Split on whitespace but preserve multi-word notes at the end
+                const parts = line.trim().split(/\s+/);
+                if (parts.length >= 3) { // At least station names and distance
+                    shotCount++;
+                    const newRow = document.createElement('tr');
+                    
+                    // Handle notes field specially - join all remaining parts after field 10
+                    const notes = parts.length > 11 ? parts.slice(11).join(' ') : (parts[11] || '');
+                    
+                    newRow.innerHTML = `
+                        <td><input type="text" name="from_station[]" value="${parts[0] || ''}"></td>
+                        <td><input type="text" name="to_station[]" value="${parts[1] || ''}"></td>
+                        <td><input type="number" name="distance[]" step="0.01" min="0" value="${parts[2] || ''}"></td>
+                        <td><input type="number" name="azimuth_fs[]" step="0.1" min="0" max="360" value="${parts[3] || ''}"></td>
+                        <td><input type="number" name="azimuth_bs[]" step="0.1" min="0" max="360" value="${parts[4] || ''}"></td>
+                        <td><input type="number" name="inclination_fs[]" step="0.1" min="-90" max="90" value="${parts[5] || ''}"></td>
+                        <td><input type="number" name="inclination_bs[]" step="0.1" min="-90" max="90" value="${parts[6] || ''}"></td>
+                        <td><input type="number" name="left[]" step="0.01" min="0" value="${parts[7] || ''}"></td>
+                        <td><input type="number" name="right[]" step="0.01" min="0" value="${parts[8] || ''}"></td>
+                        <td><input type="number" name="up[]" step="0.01" min="0" value="${parts[9] || ''}"></td>
+                        <td><input type="number" name="down[]" step="0.01" min="0" value="${parts[10] || ''}"></td>
+                        <td><input type="text" name="notes[]" value="${notes}"></td>
+                        <td><button type="button" class="delete-btn" onclick="deleteShotRow(this)">Delete</button></td>
+                    `;
+                    
+                    tbody.appendChild(newRow);
+                    addSyncListeners(newRow);
+                }
+            });
+        }
+
+        function updateReview() {
+            const form = document.getElementById('surveyForm');
+            const formData = new FormData(form);
+            let reviewHTML = '';
+            
+            // Basic info
+            reviewHTML += `<h4>🏔️ Cave & Location</h4>`;
+            reviewHTML += `<p><strong>Cave:</strong> ${formData.get('cave_name') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Location:</strong> ${formData.get('county') || 'Not specified'}, ${formData.get('state') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Date:</strong> ${formData.get('survey_date') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Area in Cave:</strong> ${formData.get('area_in_cave') || 'Not specified'}</p>`;
+            if (formData.get('time_in') || formData.get('time_out')) {
+                reviewHTML += `<p><strong>Time:</strong> ${formData.get('time_in') || 'Not specified'} - ${formData.get('time_out') || 'Not specified'}</p>`;
+            }
+            
+            // Team info
+            reviewHTML += `<h4>👥 Survey Team</h4>`;
+            reviewHTML += `<p><strong>Trip Leader:</strong> ${formData.get('trip_leader') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Book/Sketch:</strong> ${formData.get('book_sketch_person') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Instrument Reader:</strong> ${formData.get('instrument_reader') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Tape Person:</strong> ${formData.get('tape_person') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Point Person:</strong> ${formData.get('point_person') || 'Not specified'}</p>`;
+            
+            // Instruments
+            reviewHTML += `<h4>🧭 Instruments</h4>`;
+            reviewHTML += `<p><strong>Compass ID:</strong> ${formData.get('compass_id') || 'Not specified'}</p>`;
+            reviewHTML += `<p><strong>Inclinometer ID:</strong> ${formData.get('inclinometer_id') || 'Not specified'}</p>`;
+            if (formData.get('compass_frontsight') || formData.get('compass_backsight')) {
+                reviewHTML += `<p><strong>Compass Readings:</strong> FS: ${formData.get('compass_frontsight') || 'N/A'}°, BS: ${formData.get('compass_backsight') || 'N/A'}°</p>`;
+            }
+            if (formData.get('inclinometer_frontsight') || formData.get('inclinometer_backsight')) {
+                reviewHTML += `<p><strong>Inclinometer Readings:</strong> FS: ${formData.get('inclinometer_frontsight') || 'N/A'}°, BS: ${formData.get('inclinometer_backsight') || 'N/A'}°</p>`;
+            }
+            
+            // Survey shots count and details
+            const shotRows = document.querySelectorAll('#shotsTable tbody tr');
+            let validShots = 0;
+            let shotDetails = [];
+            
+            shotRows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0] && inputs[1] && inputs[0].value && inputs[1].value) {
+                    validShots++;
+                    shotDetails.push({
+                        from: inputs[0].value,
+                        to: inputs[1].value,
+                        distance: inputs[2] ? inputs[2].value : '',
+                        azimuth: inputs[3] ? inputs[3].value : '',
+                        inclination: inputs[5] ? inputs[5].value : ''
+                    });
+                }
+            });
+            
+            reviewHTML += `<h4>📏 Survey Data</h4>`;
+            reviewHTML += `<p><strong>Total Survey Shots:</strong> ${validShots} shots recorded</p>`;
+            
+            if (shotDetails.length > 0) {
+                reviewHTML += `<div style="max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; padding: 10px; border-radius: 5px; margin-top: 10px;">`;
+                reviewHTML += `<strong>Shot Details:</strong><br>`;
+                shotDetails.forEach((shot, index) => {
+                    reviewHTML += `${index + 1}. ${shot.from} → ${shot.to}`;
+                    if (shot.distance) reviewHTML += ` (${shot.distance}ft)`;
+                    if (shot.azimuth) reviewHTML += ` Az:${shot.azimuth}°`;
+                    if (shot.inclination) reviewHTML += ` Inc:${shot.inclination}°`;
+                    reviewHTML += `<br>`;
+                });
+                reviewHTML += `</div>`;
+            }
+            
+            // Objectives and notes
+            if (formData.get('survey_objective')) {
+                reviewHTML += `<h4>📝 Survey Objective</h4>`;
+                reviewHTML += `<p>${formData.get('survey_objective')}</p>`;
+            }
+            
+            if (formData.get('conditions')) {
+                reviewHTML += `<h4>🌤️ Conditions</h4>`;
+                reviewHTML += `<p>${formData.get('conditions')}</p>`;
+            }
+            
+            // Note: reviewContent element no longer exists - using updateReviewEditor instead
+            const reviewContentEl = document.getElementById('reviewContent');
+            if (reviewContentEl) {
+                reviewContentEl.innerHTML = reviewHTML;
+            }
+        }
+        
+        function updateReviewEditor() {
+            try {
+                console.log('updateReviewEditor called');
+
+                // ALWAYS build from form fields and table (not from raw data)
+                // This ensures we get a properly formatted review with all metadata
+                const form = document.getElementById('surveyForm');
+                const formData = new FormData(form);
+                let reviewText = '';
+
+                // Header
+                reviewText += '='.repeat(60) + '\n';
+                reviewText += '           CAVE SURVEY DATA REVIEW\n';
+                reviewText += '='.repeat(60) + '\n\n';
+            
+            // Cave Information
+            reviewText += '[CAVE INFORMATION]\n';
+            reviewText += `Cave Name: ${formData.get('cave_name') || 'Not specified'}\n`;
+            reviewText += `Location: ${formData.get('county') || 'Not specified'}, ${formData.get('state') || 'Not specified'}\n`;
+            reviewText += `Survey Date: ${formData.get('survey_date') || 'Not specified'}\n`;
+            reviewText += `Area in Cave: ${formData.get('area_in_cave') || 'Not specified'}\n`;
+            reviewText += `Survey Objective: ${formData.get('survey_objective') || 'Not specified'}\n\n`;
+            
+            // Survey Team
+            reviewText += '[SURVEY TEAM]\n';
+            reviewText += `Trip Leader: ${formData.get('trip_leader') || 'Not specified'}\n`;
+            reviewText += `Book/Sketch Person: ${formData.get('book_sketch_person') || 'Not specified'}\n`;
+            reviewText += `Instrument Reader: ${formData.get('instrument_reader') || 'Not specified'}\n`;
+            reviewText += `Tape Person: ${formData.get('tape_person') || 'Not specified'}\n`;
+            reviewText += `Point Person: ${formData.get('point_person') || 'Not specified'}\n\n`;
+            
+            // Instrumentation
+            reviewText += '[INSTRUMENTATION]\n';
+            reviewText += `Compass ID: ${formData.get('compass_id') || 'Not specified'}\n`;
+            reviewText += `Compass Calibration: FS=${formData.get('compass_frontsight') || 'N/A'}°, BS=${formData.get('compass_backsight') || 'N/A'}°\n`;
+            reviewText += `Inclinometer ID: ${formData.get('inclinometer_id') || 'Not specified'}\n`;
+            reviewText += `Inclinometer Calibration: FS=${formData.get('inclinometer_frontsight') || 'N/A'}°, BS=${formData.get('inclinometer_backsight') || 'N/A'}°\n\n`;
+            
+            // Survey Shots - get from table
+            reviewText += '[SURVEY SHOTS]\n';
+            reviewText += 'From     To       Dist    AzimFS  AzimBS  IncFS   IncBS   Left    Right   Up      Down    Notes\n';
+            reviewText += '-'.repeat(110) + '\n';
+            
+            const shotsTable = document.getElementById('shotsTable');
+            const shotRows = shotsTable.querySelectorAll('tbody tr');
+            
+            shotRows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs.length >= 11 && inputs[0].value) {
+                    const from = (inputs[0].value || '').padEnd(8);
+                    const to = (inputs[1].value || '').padEnd(8);
+                    const dist = (inputs[2].value || '').padEnd(7);
+                    const azfs = (inputs[3].value || '').padEnd(7);
+                    const azbs = (inputs[4].value || '').padEnd(7);
+                    const incfs = (inputs[5].value || '').padEnd(7);
+                    const incbs = (inputs[6].value || '').padEnd(7);
+                    const left = (inputs[7].value || '').padEnd(7);
+                    const right = (inputs[8].value || '').padEnd(7);
+                    const up = (inputs[9].value || '').padEnd(7);
+                    const down = (inputs[10].value || '').padEnd(7);
+                    const notes = inputs[11] ? inputs[11].value || '' : '';
+                    
+                    reviewText += `${from} ${to} ${dist} ${azfs} ${azbs} ${incfs} ${incbs} ${left} ${right} ${up} ${down} ${notes}\n`;
+                }
+            });
+            
+            // Survey Standards
+            reviewText += '\n[SURVEY STANDARDS]\n';
+            reviewText += `CRF Compass Course: ${formData.get('crf_compass_course') ? 'YES' : 'NO'}\n`;
+            reviewText += `Data Accuracy Confirmed: ${formData.get('data_accuracy') ? 'YES' : 'NO'}\n\n`;
+            
+            // Footer
+                reviewText += '='.repeat(60) + '\n';
+                reviewText += 'Review complete - Edit as needed above, then submit\n';
+                reviewText += '='.repeat(60) + '\n';
+
+                console.log('Setting reviewEditor value, length:', reviewText.length);
+                const reviewEditor = document.getElementById('reviewEditor');
+                if (reviewEditor) {
+                    reviewEditor.value = reviewText;
+                    console.log('reviewEditor updated successfully');
+                } else {
+                    console.error('reviewEditor element not found!');
+                }
+            } catch (error) {
+                console.error('Error in updateReviewEditor:', error);
+            }
+        }
+        
+        function refreshReviewData() {
+            updateReviewEditor();
+            alert('🔄 Review data refreshed from current form state!');
+        }
+        
+        function parseReviewData() {
+            // This would parse the edited text back to form fields
+            // For now, show a message that this is a placeholder
+            alert('⬅️ Parse functionality coming soon!\\n\\nFor now, use the form tabs to make changes, then click Commit Changes to update the review.');
+        }
+
+        // Auto-save and restore form data
+        function saveFormData() {
+            const form = document.getElementById('surveyForm');
+            const formData = new FormData(form);
+            const data = {};
+            
+            // Save regular form fields
+            for (const [key, value] of formData.entries()) {
+                if (key.endsWith('[]')) {
+                    // Handle array fields
+                    const baseKey = key.replace('[]', '');
+                    if (!data[baseKey]) data[baseKey] = [];
+                    data[baseKey].push(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Save survey shots table data
+            const shotsTable = document.getElementById('shotsTable');
+            const shotRows = shotsTable.querySelectorAll('tbody tr');
+            const shotsData = [];
+            
+            shotRows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs.length >= 11) {
+                    shotsData.push({
+                        from_station: inputs[0].value,
+                        to_station: inputs[1].value,
+                        distance: inputs[2].value,
+                        azimuth_fs: inputs[3].value,
+                        azimuth_bs: inputs[4].value,
+                        inclination_fs: inputs[5].value,
+                        inclination_bs: inputs[6].value,
+                        left: inputs[7].value,
+                        right: inputs[8].value,
+                        up: inputs[9].value,
+                        down: inputs[10].value,
+                        notes: inputs[11] ? inputs[11].value : ''
+                    });
+                }
+            });
+            
+            data['survey_shots'] = shotsData;
+            
+            // Save to localStorage
+            localStorage.setItem('surveyFormData', JSON.stringify(data));
+        }
+        
+        function restoreFormData() {
+            const savedData = localStorage.getItem('surveyFormData');
+            if (!savedData) return;
+            
+            try {
+                const data = JSON.parse(savedData);
+                
+                // Restore regular form fields
+                Object.entries(data).forEach(([key, value]) => {
+                    if (key === 'survey_shots') return; // Handle separately
+                    
+                    if (Array.isArray(value)) {
+                        // Handle array fields (like from_station[], to_station[])
+                        value.forEach((val, index) => {
+                            const field = document.querySelector(`[name="${key}[]"]:nth-of-type(${index + 1})`);
+                            if (field) field.value = val;
+                        });
+                    } else {
+                        // Handle regular fields
+                        const field = document.querySelector(`[name="${key}"]`);
+                        if (field) {
+                            if (field.type === 'checkbox') {
+                                field.checked = value === 'on';
+                            } else {
+                                field.value = value;
+                            }
+                        }
+                    }
+                });
+                
+                // Restore survey shots table
+                if (data.survey_shots && data.survey_shots.length > 0) {
+                    const shotsTable = document.getElementById('shotsTable');
+                    const tbody = shotsTable.querySelector('tbody');
+                    
+                    // Clear existing rows
+                    tbody.innerHTML = '';
+                    
+                    // Add rows with saved data
+                    data.survey_shots.forEach((shot, index) => {
+                        addShotRow();
+                        const row = tbody.children[index];
+                        const inputs = row.querySelectorAll('input');
+                        
+                        if (inputs.length >= 11) {
+                            inputs[0].value = shot.from_station || '';
+                            inputs[1].value = shot.to_station || '';
+                            inputs[2].value = shot.distance || '';
+                            inputs[3].value = shot.azimuth_fs || '';
+                            inputs[4].value = shot.azimuth_bs || '';
+                            inputs[5].value = shot.inclination_fs || '';
+                            inputs[6].value = shot.inclination_bs || '';
+                            inputs[7].value = shot.left || '';
+                            inputs[8].value = shot.right || '';
+                            inputs[9].value = shot.up || '';
+                            inputs[10].value = shot.down || '';
+                            if (inputs[11]) inputs[11].value = shot.notes || '';
+                        }
+                    });
+                }
+                
+                console.log('Survey form data restored from localStorage');
+            } catch (error) {
+                console.error('Error restoring form data:', error);
+            }
+        }
+        
+        function clearSavedData() {
+            localStorage.removeItem('surveyFormData');
+            console.log('Saved survey data cleared');
+        }
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Don't auto-restore saved form data - start with blank form
+            // restoreFormData();
+            
+            // Add sync listeners to initial table row
+            const initialRow = document.querySelector('#shotsTable tbody tr');
+            if (initialRow) {
+                addSyncListeners(initialRow);
+            }
+            
+            // Add listener to raw data textarea
+            document.getElementById('raw_data').addEventListener('input', function() {
+                // Debounce the sync to avoid excessive updates
+                clearTimeout(this.syncTimeout);
+                this.syncTimeout = setTimeout(rawToTable, 500);
+            });
+            
+            // Add real-time listeners to form fields for review updates and auto-save
+            const formInputs = document.querySelectorAll('#surveyForm input, #surveyForm textarea, #surveyForm select');
+            formInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Auto-save form data
+                    clearTimeout(this.autoSaveTimeout);
+                    this.autoSaveTimeout = setTimeout(saveFormData, 1000); // Save after 1 second of inactivity
+                    
+                    // Only update review if we're currently on the review tab
+                    const reviewTab = document.getElementById('review-submit');
+                    if (reviewTab && reviewTab.classList.contains('active')) {
+                        clearTimeout(this.reviewUpdateTimeout);
+                        this.reviewUpdateTimeout = setTimeout(updateReviewEditor, 300);
+                    }
+                });
+            });
+            
+            // Save data when tab becomes visible (user returns to page)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    saveFormData();
+                }
+            });
+            
+            // Save data before page unload
+            window.addEventListener('beforeunload', function() {
+                saveFormData();
+            });
+
+            // Add form submit listener for debugging
+            const surveyForm = document.getElementById('surveyForm');
+            surveyForm.addEventListener('submit', function(e) {
+                console.log('Form submit event fired!');
+                console.log('Form action:', surveyForm.action);
+                console.log('Form method:', surveyForm.method);
+
+                // Check if required fields are filled
+                const requiredFields = surveyForm.querySelectorAll('[required]');
+                let missingFields = [];
+                requiredFields.forEach(field => {
+                    if (!field.value && field.type !== 'checkbox') {
+                        missingFields.push(field.name || field.id);
+                    } else if (field.type === 'checkbox' && !field.checked) {
+                        missingFields.push(field.name || field.id);
+                    }
+                });
+
+                if (missingFields.length > 0) {
+                    console.error('Missing required fields:', missingFields);
+                } else {
+                    console.log('All required fields filled');
+                }
+            });
+        });
+
+        // Commit data functions
+        function commitTripInfo() {
+            try {
+                const form = document.getElementById('surveyForm');
+                const formData = new FormData(form);
+                const tripData = {};
+                
+                // Extract trip info fields
+                const tripFields = ['cave_name', 'state', 'county', 'region', 'survey_date', 'area_in_cave', 
+                                  'time_in', 'time_out', 'survey_objective', 'conditions', 'other_info',
+                                  'book_sketch_person', 'instrument_reader', 'tape_person', 'point_person', 
+                                  'trip_leader', 'other_team_members', 'compass_id', 'compass_frontsight',
+                                  'compass_backsight', 'inclinometer_id', 'inclinometer_frontsight',
+                                  'inclinometer_backsight', 'calibration_notes', 'additional_equipment'];
+                
+                tripFields.forEach(field => {
+                    tripData[field] = formData.get(field) || '';
+                });
+                
+                // Check if CRF compass course is checked
+                tripData.crf_compass_course = formData.has('crf_compass_course');
+                
+                // Store in committed data
+                committedData.tripInfo = tripData;
+                
+                // Update status
+                const statusEl = document.getElementById('tripInfoStatus');
+                statusEl.textContent = '✅ Trip data committed';
+                statusEl.className = 'commit-status success';
+                
+                // Unlock the next tab (Cave Survey Data)
+                unlockTab('survey-data');
+                
+                // Auto-clear status after 3 seconds
+                setTimeout(() => {
+                    statusEl.textContent = '';
+                    statusEl.className = 'commit-status';
+                }, 3000);
+                
+            } catch (error) {
+                const statusEl = document.getElementById('tripInfoStatus');
+                statusEl.textContent = '❌ Error committing data';
+                statusEl.className = 'commit-status error';
+            }
+        }
+
+        function commitTableData() {
+            try {
+                const rows = document.querySelectorAll('#shotsTable tbody tr');
+                const shotsData = [];
+                
+                
+                rows.forEach((row, index) => {
+                    const inputs = row.querySelectorAll('input');
+                    if (inputs.length > 1) {
+                    }
+                    
+                    // Check if this row has any meaningful data (more permissive for debugging)
+                    const hasFromStation = inputs[0] && inputs[0].value.trim();
+                    const hasToStation = inputs[1] && inputs[1].value.trim();
+                    
+                    if (inputs.length >= 12 && hasFromStation && hasToStation) { // At least from/to stations
+                        const shot = {
+                            from_station: inputs[0].value,
+                            to_station: inputs[1].value,
+                            distance: inputs[2].value,
+                            azimuth_fs: inputs[3].value,
+                            azimuth_bs: inputs[4].value,
+                            inclination_fs: inputs[5].value,
+                            inclination_bs: inputs[6].value,
+                            left: inputs[7].value,
+                            right: inputs[8].value,
+                            up: inputs[9].value,
+                            down: inputs[10].value,
+                            notes: inputs[11].value
+                        };
+                        shotsData.push(shot);
+                    }
+                });
+                
+                // Store in committed data
+                committedData.surveyShots = shotsData;
+                
+                // Update status
+                const statusEl = document.getElementById('tableDataStatus');
+                if (shotsData.length === 0) {
+                    statusEl.textContent = '⚠️ No valid shots found - enter station names first';
+                    statusEl.className = 'commit-status error';
+                } else {
+                    statusEl.textContent = `✅ ${shotsData.length} shots committed`;
+                    statusEl.className = 'commit-status success';
+                    
+                    // Unlock the Review & Submit tab
+                    unlockTab('review-submit');
+                }
+                
+                // Auto-clear status after 3 seconds
+                setTimeout(() => {
+                    statusEl.textContent = '';
+                    statusEl.className = 'commit-status';
+                }, 3000);
+                
+            } catch (error) {
+                const statusEl = document.getElementById('tableDataStatus');
+                statusEl.textContent = '❌ Error committing data';
+                statusEl.className = 'commit-status error';
+            }
+        }
+
+        function commitRawData() {
+            try {
+                const rawDataText = document.getElementById('raw_data').value.trim();
+                
+                    
+                if (!rawDataText) {
+                    throw new Error('No raw data to commit');
+                }
+                
+                // Parse raw data - fix the split to use actual newlines
+                const lines = rawDataText.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
+                    
+                const parsedShots = [];
+                
+                lines.forEach((line, index) => {
+                    const parts = line.trim().split(/\s+/);
+                        if (parts.length >= 3) {
+                        const notes = parts.length > 11 ? parts.slice(11).join(' ') : (parts[11] || '');
+                        const shot = {
+                            from_station: parts[0] || '',
+                            to_station: parts[1] || '',
+                            distance: parts[2] || '',
+                            azimuth_fs: parts[3] || '',
+                            azimuth_bs: parts[4] || '',
+                            inclination_fs: parts[5] || '',
+                            inclination_bs: parts[6] || '',
+                            left: parts[7] || '',
+                            right: parts[8] || '',
+                            up: parts[9] || '',
+                            down: parts[10] || '',
+                            notes: notes
+                        };
+                        parsedShots.push(shot);
+                    }
+                });
+                
+                // Store in committed data
+                committedData.rawData = rawDataText;
+                committedData.surveyShots = parsedShots;
+                
+                // Sync with table
+                rawToTable();
+                
+                // Update status
+                const statusEl = document.getElementById('rawDataStatus');
+                statusEl.textContent = `✅ ${parsedShots.length} shots committed`;
+                statusEl.className = 'commit-status success';
+                
+                // Unlock the Review & Submit tab
+                unlockTab('review-submit');
+                
+                // Auto-clear status after 3 seconds
+                setTimeout(() => {
+                    statusEl.textContent = '';
+                    statusEl.className = 'commit-status';
+                }, 3000);
+                
+            } catch (error) {
+                const statusEl = document.getElementById('rawDataStatus');
+                statusEl.textContent = '❌ Error committing data';
+                statusEl.className = 'commit-status error';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKKC October 2025 Expedition Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clean.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+        <header class="header">
+            <div class="header-content">
+                <img src="{{ url_for('static', filename='cave.png') }}" alt="CKKC Logo" class="expedition-logo">
+                <div class="header-text">
+                    <h1>CKKC Expedition<br>October 2025 Registration</h1>
+                    <p class="subtitle">October 14-19, 2025 • Hart, Barren, Edmonson Counties, KY</p>
+                </div>
+            </div>
+        </header>
+
+        <form class="registration-form" method="POST" action="/register">
+            <!-- Personal Information Section -->
+            <section class="form-section">
+                <h2>📋 Personal Information</h2>
+                <div class="form-group">
+                    <label for="full_name">Full Name *</label>
+                    <input type="text" id="full_name" name="full_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address *</label>
+                    <textarea id="address" name="address" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone_number">Phone Number *</label>
+                    <input type="text" id="phone_number" name="phone_number" 
+                           placeholder="(555) 123-4567" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="emergency_contact">Emergency contact and phone number *</label>
+                    <input type="text" id="emergency_contact" name="emergency_contact"
+                           placeholder="Name and phone number" required>
+                </div>
+            </section>
+
+            <!-- Travel & Accommodation Section -->
+            <section class="form-section">
+                <h2>🏕️ Travel & Accommodation</h2>
+                <div class="form-group">
+                    <label for="traveled_with">Who did you travel with?</label>
+                    <input type="text" id="traveled_with" name="traveled_with" 
+                           placeholder="Names of travel companions">
+                </div>
+                
+                <div class="form-group">
+                    <label>Where are you staying during the expedition? *</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="accommodation" value="crf_hamilton_valley" required>
+                            <span class="radio-custom"></span>
+                            CRF Hamilton Valley (fee applies, $10/night/person)
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="accommodation" value="rock_cabin_camping" required>
+                            <span class="radio-custom"></span>
+                            Rock Cabin Camping (fee applies, $4/night/person camping, $35+/night/person cabins, $13+/night/person bunkhouse)
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="accommodation" value="other" required>
+                            <span class="radio-custom"></span>
+                            Other
+                        </label>
+                    </div>
+                    <div class="form-group" id="other-accommodation-group" style="display: none; margin-top: 15px;">
+                        <label for="other_accommodation">Please specify your accommodation:</label>
+                        <input type="text" id="other_accommodation" name="other_accommodation" 
+                               placeholder="Describe your accommodation arrangements">
+                    </div>
+                </div>
+                
+
+                <div class="form-group">
+                    <label>Participation Days *</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="tuesday">
+                            <span class="checkbox-custom"></span>
+                            Tuesday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="wednesday">
+                            <span class="checkbox-custom"></span>
+                            Wednesday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="thursday">
+                            <span class="checkbox-custom"></span>
+                            Thursday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="friday">
+                            <span class="checkbox-custom"></span>
+                            Friday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="saturday">
+                            <span class="checkbox-custom"></span>
+                            Saturday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="sunday">
+                            <span class="checkbox-custom"></span>
+                            Sunday
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="eating_at_expedition" name="eating_at_expedition" value="yes">
+                        <span class="checkbox-custom"></span>
+                        I will be eating at the expedition (fee applies, $10/day/person)
+                    </label>
+                </div>
+            </section>
+
+            <!-- Skills & Equipment Section -->
+            <section class="form-section">
+                <h2>🧗 Skills & Capabilities</h2>
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 15px; font-weight: 600; color: #2d3748;">
+                        <strong>Required:</strong> Will you be on trips that go into Roppel or other parts of the Mammoth Cave System? *
+                    </label>
+                    <div class="radio-group" style="margin-bottom: 20px;">
+                        <label class="radio-option">
+                            <input type="radio" name="roppel_trips" value="yes" required>
+                            <span class="radio-custom"></span>
+                            Yes - I will be on Roppel/Mammoth Cave System trips
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="roppel_trips" value="no" required>
+                            <span class="radio-custom"></span>
+                            No - I will not be on Roppel/Mammoth Cave System trips
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" id="compass-agreement-group" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fb; border-radius: 8px; border-left: 4px solid #5d6d7e;">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="crf_compass_agreement" value="yes" id="crf_compass_agreement">
+                            <span class="checkbox-custom"></span>
+                            <strong>I confirm:</strong> I will use the CRF compass course at Hamilton Valley facility to shoot and record frontsights and backsights for survey instruments used in Roppel or other Mammoth Cave System survey trips *
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>I can contribute as: (check all that apply)</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="vertical">
+                            <span class="checkbox-custom"></span>
+                            Vertical
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="sketcher">
+                            <span class="checkbox-custom"></span>
+                            Sketcher
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="instrument_reader">
+                            <span class="checkbox-custom"></span>
+                            Instrument Reader
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="point_person">
+                            <span class="checkbox-custom"></span>
+                            Point Person
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Equipment Section -->
+            <section class="form-section">
+                <h2>🎒 Equipment</h2>
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="have_instruments" value="yes" id="have_instruments_checkbox">
+                        <span class="checkbox-custom"></span>
+                        I have survey instruments
+                    </label>
+                    <div class="form-group" id="instruments-details-group" style="display: none; margin-top: 15px;">
+                        <label for="instruments_details">Please describe your survey instruments:</label>
+                        <textarea id="instruments_details" name="instruments_details" rows="3" 
+                                placeholder="List the survey instruments you have (e.g., compass, clinometer, tape measure, etc.)"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Group gear I can share/loan: (check all that apply)</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="ropes">
+                            <span class="checkbox-custom"></span>
+                            Ropes
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="rope_pads">
+                            <span class="checkbox-custom"></span>
+                            Rope Pads
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="survey_equipment">
+                            <span class="checkbox-custom"></span>
+                            Survey Equipment
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="digging_equipment">
+                            <span class="checkbox-custom"></span>
+                            Digging Equipment
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="wetsuit">
+                            <span class="checkbox-custom"></span>
+                            Wetsuit
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="other" id="group_gear_other_checkbox">
+                            <span class="checkbox-custom"></span>
+                            Other
+                        </label>
+                    </div>
+                    <div class="form-group" id="group-gear-other-group" style="display: none; margin-top: 15px;">
+                        <label for="group_gear_other_details">Please specify what other gear you can share/loan:</label>
+                        <input type="text" id="group_gear_other_details" name="group_gear_other_details" 
+                               placeholder="Describe the other gear you can share/loan">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Additional Information Section -->
+            <section class="form-section">
+                <h2>💬 Additional Information</h2>
+                
+                <div class="form-group">
+                    <label for="additional_info">Anything else you would like to share?</label>
+                    <textarea id="additional_info" name="additional_info" rows="4" 
+                              placeholder="Optional: Share any additional information, questions, or comments"></textarea>
+                </div>
+                
+                <div class="medical-disclaimer" style="background: #fef5e7; border-left: 4px solid #ed8936; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                    <p style="margin: 0; color: #744210; font-size: 0.9rem; line-height: 1.5;">
+                        <strong>Important:</strong> For medical conditions, allergies, or other sensitive information, please communicate with the organizers directly. Meal ingredients will be available for you to review, but food allergen accommodations are not possible at this expedition due to the volume of food that will be prepared. Assume there will be cross contamination due to the close proximity of different food types.
+                    </p>
+                </div>
+
+                <!-- Waiver/Due Diligence Statement -->
+                <div style="background: #fff5f5; border: 3px solid #c53030; border-radius: 8px; padding: 20px; margin: 30px 0 20px 0;">
+                    <h3 style="color: #c53030; margin: 0 0 15px 0; font-size: 1.3rem; text-align: center;">
+                        ⚠️ IMPORTANT SAFETY NOTICE ⚠️
+                    </h3>
+                    <div style="color: #742a2a; font-size: 1rem; line-height: 1.7;">
+                        <p style="margin: 0 0 15px 0; font-weight: bold;">
+                            Cave exploration is an inherently dangerous activity that can result in serious injury or death.
+                        </p>
+                        <p style="margin: 0 0 15px 0;">
+                            By registering for this expedition, you acknowledge that you understand and accept the risks associated with cave exploration, including but not limited to: falls, rockfall, flooding, hypothermia, equipment failure, getting lost, and entrapment. You are solely responsible for your own safety and decisions while participating in this expedition.
+                        </p>
+                        <p style="margin: 0 0 15px 0;">
+                            <strong>You must have appropriate training, experience, and equipment for the caves you choose to enter.</strong> Do not attempt trips beyond your skill level. Always inform trip leaders of any medical conditions, limitations, or concerns that may affect your safety underground.
+                        </p>
+                        <p style="margin: 0; font-weight: bold; color: #c53030;">
+                            By submitting this registration, you confirm that you have read, understood, and accept these risks and responsibilities.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Preview Section (initially hidden) -->
+            <div id="preview-section" style="display: none;">
+                <h2>Review Your Registration</h2>
+                <p>Please review all information before submitting your registration. You can go back to make changes if needed.</p>
+                
+                <div id="preview-content">
+                    <!-- Preview content will be populated by JavaScript -->
+                </div>
+
+                <!-- Waiver/Due Diligence Statement -->
+                <div style="background: #fff5f5; border: 3px solid #c53030; border-radius: 8px; padding: 20px; margin: 30px 0 20px 0;">
+                    <h3 style="color: #c53030; margin: 0 0 15px 0; font-size: 1.3rem; text-align: center;">
+                        ⚠️ IMPORTANT SAFETY NOTICE ⚠️
+                    </h3>
+                    <div style="color: #742a2a; font-size: 1rem; line-height: 1.7;">
+                        <p style="margin: 0 0 15px 0; font-weight: bold;">
+                            Cave exploration is an inherently dangerous activity that can result in serious injury or death.
+                        </p>
+                        <p style="margin: 0 0 15px 0;">
+                            By registering for this expedition, you acknowledge that you understand and accept the risks associated with cave exploration, including but not limited to: falls, rockfall, flooding, hypothermia, equipment failure, getting lost, and entrapment. You are solely responsible for your own safety and decisions while participating in this expedition.
+                        </p>
+                        <p style="margin: 0 0 15px 0;">
+                            <strong>You must have appropriate training, experience, and equipment for the caves you choose to enter.</strong> Do not attempt trips beyond your skill level. Always inform trip leaders of any medical conditions, limitations, or concerns that may affect your safety underground.
+                        </p>
+                        <p style="margin: 0; font-weight: bold; color: #c53030;">
+                            By submitting this registration, you confirm that you have read, understood, and accept these risks and responsibilities.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="goBackToEdit()" class="back-edit-btn">
+                        📝 Go Back to Edit
+                    </button>
+                    <button type="submit" class="submit-btn">
+                        ✅ Submit Registration
+                    </button>
+                </div>
+            </div>
+
+            <!-- Initial Form Actions -->
+            <div class="form-actions" id="initial-actions">
+                <button type="button" onclick="generatePreview()" class="preview-btn">
+                    👁️ Preview & Review Registration
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Show/hide other accommodation field
+        document.querySelectorAll('input[name="accommodation"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherGroup = document.getElementById('other-accommodation-group');
+                const otherInput = document.getElementById('other_accommodation');
+                if (this.value === 'other') {
+                    otherGroup.style.display = 'block';
+                    otherInput.required = true;
+                } else {
+                    otherGroup.style.display = 'none';
+                    otherInput.required = false;
+                    otherInput.value = '';
+                }
+            });
+        });
+
+        // Show/hide CRF compass agreement field based on Roppel trips selection
+        document.querySelectorAll('input[name="roppel_trips"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const compassGroup = document.getElementById('compass-agreement-group');
+                const compassCheckbox = document.getElementById('crf_compass_agreement');
+                if (this.value === 'yes') {
+                    compassGroup.style.display = 'block';
+                    compassCheckbox.required = true;
+                } else {
+                    compassGroup.style.display = 'none';
+                    compassCheckbox.required = false;
+                    compassCheckbox.checked = false;
+                }
+            });
+        });
+
+        // Show/hide instruments details field
+        document.getElementById('have_instruments_checkbox').addEventListener('change', function() {
+            const detailsGroup = document.getElementById('instruments-details-group');
+            const detailsInput = document.getElementById('instruments_details');
+            if (this.checked) {
+                detailsGroup.style.display = 'block';
+                detailsInput.required = true;
+            } else {
+                detailsGroup.style.display = 'none';
+                detailsInput.required = false;
+                detailsInput.value = '';
+            }
+        });
+
+        // Show/hide group gear other details field
+        document.getElementById('group_gear_other_checkbox').addEventListener('change', function() {
+            const otherGroup = document.getElementById('group-gear-other-group');
+            const otherInput = document.getElementById('group_gear_other_details');
+            if (this.checked) {
+                otherGroup.style.display = 'block';
+                otherInput.required = true;
+            } else {
+                otherGroup.style.display = 'none';
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        });
+
+        // Preview functionality
+        function generatePreview() {
+            console.log('generatePreview function called');
+            
+            // Validate required fields before showing preview
+            const form = document.querySelector('form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const previewContent = document.getElementById('preview-content');
+            console.log('previewContent element:', previewContent);
+            let html = '';
+            
+            // Personal Information
+            html += '<div class="preview-section">';
+            html += '<h4>👤 Personal Information</h4>';
+            html += '<div class="preview-data">';
+            html += createPreviewItem('Full Name', document.getElementById('full_name').value);
+            html += createPreviewItem('Email', document.getElementById('email').value);
+            html += createPreviewItem('Phone Number', document.getElementById('phone_number').value);
+            html += createPreviewItem('Address', document.getElementById('address').value);
+            html += createPreviewItem('Emergency Contact', document.getElementById('emergency_contact').value);
+            html += createPreviewItem('Traveled With', document.getElementById('traveled_with').value);
+            html += '</div>';
+            html += '</div>';
+            
+            // Travel & Accommodation
+            html += '<div class="preview-section">';
+            html += '<h4>🏕️ Travel & Accommodation</h4>';
+            html += '<div class="preview-data">';
+            const accommodation = document.querySelector('input[name="accommodation"]:checked');
+            if (accommodation) {
+                let accommodationText = accommodation.value;
+                if (accommodationText === 'crf_hamilton_valley') accommodationText = 'CRF Hamilton Valley';
+                else if (accommodationText === 'rock_cabin_camping') accommodationText = 'Rock Cabin Camping';
+                else if (accommodationText === 'other') accommodationText = 'Other: ' + document.getElementById('other_accommodation').value;
+                html += createPreviewItem('Accommodation', accommodationText);
+            }
+            
+            const participationDays = Array.from(document.querySelectorAll('input[name="participation_days"]:checked')).map(cb => cb.value);
+            if (participationDays.length > 0) {
+                html += createPreviewItem('Participation Days', participationDays.join(', '));
+            }
+            
+            html += createPreviewItem('Eating at Expedition', document.getElementById('eating_at_expedition').checked ? 'Yes' : 'No');
+            html += '</div>';
+            html += '</div>';
+            
+            // Skills & Capabilities
+            html += '<div class="preview-section">';
+            html += '<h4>🧗 Skills & Capabilities</h4>';
+            html += '<div class="preview-data">';
+            const roppelTrips = document.querySelector('input[name="roppel_trips"]:checked');
+            if (roppelTrips) {
+                html += createPreviewItem('Roppel Cave System Trips', roppelTrips.value === 'yes' ? 'Yes' : 'No');
+                if (roppelTrips.value === 'yes') {
+                    html += createPreviewItem('CRF Compass Course Agreement', document.getElementById('crf_compass_agreement').checked ? 'Agreed' : 'Not Agreed');
+                }
+            }
+            
+            const skills = Array.from(document.querySelectorAll('input[name="skills"]:checked')).map(cb => cb.value);
+            if (skills.length > 0) {
+                html += createPreviewItem('Skills', skills.join(', '));
+            }
+            html += '</div>';
+            html += '</div>';
+            
+            // Equipment
+            html += '<div class="preview-section">';
+            html += '<h4>🎒 Equipment</h4>';
+            html += '<div class="preview-data">';
+            html += createPreviewItem('Have Survey Instruments', document.getElementById('have_instruments_checkbox').checked ? 'Yes' : 'No');
+            if (document.getElementById('have_instruments_checkbox').checked) {
+                html += createPreviewItem('Instrument Details', document.getElementById('instruments_details').value);
+            }
+            
+            const groupGear = Array.from(document.querySelectorAll('input[name="group_gear"]:checked')).map(cb => cb.value);
+            if (groupGear.length > 0) {
+                let gearText = groupGear.join(', ');
+                if (groupGear.includes('other')) {
+                    gearText += ' (' + document.getElementById('group_gear_other_details').value + ')';
+                }
+                html += createPreviewItem('Group Gear to Share/Loan', gearText);
+            }
+            html += '</div>';
+            html += '</div>';
+            
+            // Additional Information
+            if (document.getElementById('additional_info').value) {
+                html += '<div class="preview-section">';
+                html += '<h4>💬 Additional Information</h4>';
+                html += '<div class="preview-data">';
+                html += '<p>' + document.getElementById('additional_info').value + '</p>';
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            previewContent.innerHTML = html;
+            
+            // Hide form sections and show preview
+            const formSections = document.querySelectorAll('.form-section');
+            formSections.forEach(section => section.style.display = 'none');
+            document.getElementById('initial-actions').style.display = 'none';
+            document.getElementById('preview-section').style.display = 'block';
+        }
+        
+        function createPreviewItem(label, value) {
+            if (!value) return '';
+            return '<div class="preview-item"><span class="preview-label">' + label + ':</span> <span class="preview-value">' + value + '</span></div>';
+        }
+        
+        function goBackToEdit() {
+            // Show form sections and hide preview
+            const formSections = document.querySelectorAll('.form-section');
+            formSections.forEach(section => section.style.display = 'block');
+            document.getElementById('initial-actions').style.display = 'block';
+            document.getElementById('preview-section').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

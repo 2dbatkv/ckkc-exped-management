@@ -1,0 +1,467 @@
+/* Cave-Themed Design */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: radial-gradient(ellipse at center, #2c1810 0%, #1a0f0a 70%, #0d0705 100%);
+    min-height: 100vh;
+    color: #d4af37;
+    overflow-x: hidden;
+}
+
+.cave-background {
+    position: relative;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(101, 67, 33, 0.2) 0%, transparent 50%),
+        linear-gradient(180deg, #1a0f0a 0%, #2c1810 50%, #1a0f0a 100%);
+}
+
+.cave-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 98px,
+            rgba(139, 69, 19, 0.1) 100px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 98px,
+            rgba(101, 67, 33, 0.1) 100px
+        );
+    pointer-events: none;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.cave-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.4) 0%, rgba(101, 67, 33, 0.6) 100%);
+    border-radius: 15px;
+    border: 3px solid #8b4513;
+    box-shadow: 
+        0 0 20px rgba(212, 175, 55, 0.3),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.stalactites {
+    height: 20px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 15px,
+        #654321 15px,
+        #654321 20px,
+        transparent 20px,
+        transparent 40px
+    );
+    margin-bottom: 15px;
+}
+
+.cave-header h1 {
+    font-size: 2.5rem;
+    color: #ffd700;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(255, 215, 0, 0.5);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.expedition-dates {
+    font-size: 1.3rem;
+    color: #daa520;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.location {
+    font-size: 1.1rem;
+    color: #cd853f;
+    margin-bottom: 15px;
+}
+
+.header-decoration {
+    font-size: 1.5rem;
+    letter-spacing: 10px;
+    opacity: 0.8;
+}
+
+.form-container {
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.3) 0%, rgba(101, 67, 33, 0.5) 100%);
+    border-radius: 15px;
+    border: 2px solid #8b4513;
+    box-shadow: 
+        0 0 30px rgba(0, 0, 0, 0.7),
+        inset 0 0 20px rgba(212, 175, 55, 0.1);
+    overflow: hidden;
+}
+
+.expedition-form {
+    padding: 40px;
+}
+
+.info-section {
+    border: 2px solid #654321;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    padding: 25px;
+    background: rgba(26, 15, 10, 0.6);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.info-section legend {
+    background: linear-gradient(135deg, #8b4513 0%, #654321 100%);
+    color: #ffd700;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid #654321;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.field-group {
+    margin-bottom: 25px;
+}
+
+.field-group label {
+    display: block;
+    color: #daa520;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+input[type="text"], 
+input[type="email"], 
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(26, 15, 10, 0.8);
+    border: 2px solid #654321;
+    border-radius: 8px;
+    color: #ffd700;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, 
+input[type="email"]:focus, 
+textarea:focus {
+    outline: none;
+    border-color: #daa520;
+    box-shadow: 
+        0 0 10px rgba(218, 165, 32, 0.5),
+        inset 0 0 5px rgba(255, 215, 0, 0.2);
+    background: rgba(26, 15, 10, 0.9);
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+textarea::placeholder {
+    color: #cd853f;
+    opacity: 0.8;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Cave-themed radio buttons */
+.radio-cave-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cave-radio {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 0;
+}
+
+.cave-radio:hover {
+    background-color: rgba(139, 69, 19, 0.3);
+}
+
+input[type="radio"], input[type="checkbox"] {
+    display: none;
+}
+
+.radio-mark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #654321;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+    background: rgba(26, 15, 10, 0.8);
+}
+
+input[type="radio"]:checked + .radio-mark {
+    border-color: #daa520;
+    background: radial-gradient(circle, #ffd700 30%, #daa520 70%);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+input[type="radio"]:checked + .radio-mark::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background-color: #1a0f0a;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.option-text {
+    color: #d4af37;
+    font-weight: 500;
+}
+
+.option-text em {
+    color: #cd853f;
+    font-style: italic;
+}
+
+/* Days grid */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.day-checkbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 15px 10px;
+    border: 2px solid #654321;
+    border-radius: 8px;
+    background: rgba(26, 15, 10, 0.6);
+    transition: all 0.3s ease;
+    font-weight: bold;
+    color: #daa520;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.day-checkbox:hover {
+    background: rgba(139, 69, 19, 0.4);
+    border-color: #8b4513;
+}
+
+.day-mark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #654321;
+    border-radius: 4px;
+    background: rgba(26, 15, 10, 0.8);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+input[type="checkbox"]:checked + .day-mark {
+    border-color: #daa520;
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+input[type="checkbox"]:checked + .day-mark::after {
+    content: '⚡';
+    color: #1a0f0a;
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Skills grid */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.skill-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 15px;
+    border: 2px solid #654321;
+    border-radius: 8px;
+    background: rgba(26, 15, 10, 0.6);
+    transition: all 0.3s ease;
+    margin-bottom: 0;
+}
+
+.skill-option:hover {
+    background: rgba(139, 69, 19, 0.4);
+    border-color: #8b4513;
+}
+
+.skill-mark {
+    font-size: 1.5rem;
+    width: 30px;
+    text-align: center;
+}
+
+.skill-text {
+    color: #d4af37;
+    font-weight: 500;
+}
+
+input[type="checkbox"]:checked ~ .skill-text {
+    color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* Gear grid */
+.gear-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.gear-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 12px;
+    border: 2px solid #654321;
+    border-radius: 8px;
+    background: rgba(26, 15, 10, 0.6);
+    transition: all 0.3s ease;
+    color: #d4af37;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.gear-option:hover {
+    background: rgba(139, 69, 19, 0.4);
+    border-color: #8b4513;
+}
+
+.gear-mark {
+    font-size: 1.2rem;
+}
+
+input[type="checkbox"]:checked ~ .gear-option {
+    color: #ffd700;
+    background: rgba(139, 69, 19, 0.5);
+    border-color: #daa520;
+}
+
+/* Submit section */
+.submit-section {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #654321;
+}
+
+.expedition-submit {
+    background: linear-gradient(135deg, #8b4513 0%, #654321 50%, #8b4513 100%);
+    color: #ffd700;
+    border: 3px solid #654321;
+    padding: 18px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: 
+        0 5px 15px rgba(0, 0, 0, 0.5),
+        inset 0 2px 5px rgba(255, 215, 0, 0.2);
+}
+
+.expedition-submit:hover {
+    background: linear-gradient(135deg, #a0522d 0%, #8b4513 50%, #a0522d 100%);
+    border-color: #daa520;
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(255, 215, 0, 0.3),
+        inset 0 2px 5px rgba(255, 215, 0, 0.3);
+}
+
+.expedition-submit:active {
+    transform: translateY(0);
+}
+
+.submit-note {
+    margin-top: 15px;
+    color: #cd853f;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .cave-header {
+        padding: 20px;
+    }
+    
+    .cave-header h1 {
+        font-size: 2rem;
+    }
+    
+    .expedition-form {
+        padding: 20px;
+    }
+    
+    .days-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .skills-grid, .gear-grid {
+        grid-template-columns: 1fr;
+    }
+}

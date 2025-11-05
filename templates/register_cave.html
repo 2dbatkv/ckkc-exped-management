@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKKC October 2025 Expedition Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cave.css') }}">
+</head>
+<body>
+    <div class="cave-background">
+        <div class="container">
+            <header class="cave-header">
+                <div class="stalactites"></div>
+                <h1>🕳️ MAMMOTH CAVE EXPEDITION</h1>
+                <p class="expedition-dates">October 14-19, 2025</p>
+                <p class="location">Hamilton Valley Facility</p>
+                <div class="header-decoration">⚡ ⛏️ 🔦 ⚡</div>
+            </header>
+
+            <div class="form-container">
+                <form class="expedition-form" method="POST">
+                    
+                    <!-- Personal Info -->
+                    <fieldset class="info-section">
+                        <legend>👤 CAVER INFORMATION</legend>
+                        
+                        <div class="field-group">
+                            <label for="full_name">Full Name</label>
+                            <input type="text" id="full_name" name="full_name" required>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label for="address">Address</label>
+                            <textarea id="address" name="address" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="field-group">
+                            <label for="emergency_contact">Emergency contact and phone number</label>
+                            <input type="text" id="emergency_contact" name="emergency_contact"
+                                   placeholder="Name and phone number" required>
+                        </div>
+                    </fieldset>
+
+                    <!-- Travel & Stay -->
+                    <fieldset class="info-section">
+                        <legend>🏕️ EXPEDITION LOGISTICS</legend>
+                        
+                        <div class="field-group">
+                            <label for="traveled_with">Travel Companions</label>
+                            <input type="text" id="traveled_with" name="traveled_with" 
+                                   placeholder="Who did you travel with?">
+                        </div>
+                        
+                        <div class="field-group">
+                            <label>Base Camp Location</label>
+                            <div class="radio-cave-group">
+                                <label class="cave-radio">
+                                    <input type="radio" name="accommodation" value="crf_hamilton_valley" required>
+                                    <span class="radio-mark"></span>
+                                    <span class="option-text">CRF Hamilton Valley <em>(fee applies, $10/night/person)</em></span>
+                                </label>
+                                <label class="cave-radio">
+                                    <input type="radio" name="accommodation" value="rock_cabin_camping" required>
+                                    <span class="radio-mark"></span>
+                                    <span class="option-text">Rock Cabin Camping <em>(fee applies, $4/night/person camping, $35+/night/person cabins, $13+/night/person bunkhouse)</em></span>
+                                </label>
+                                <label class="cave-radio">
+                                    <input type="radio" name="accommodation" value="other" required>
+                                    <span class="radio-mark"></span>
+                                    <span class="option-text">Other Location</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label>Expedition Days</label>
+                            <div class="days-grid">
+                                <label class="day-checkbox">
+                                    <input type="checkbox" name="participation_days" value="tuesday">
+                                    <span class="day-mark"></span>
+                                    TUE
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" name="participation_days" value="wednesday">
+                                    <span class="day-mark"></span>
+                                    WED
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" name="participation_days" value="thursday">
+                                    <span class="day-mark"></span>
+                                    THU
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" name="participation_days" value="friday">
+                                    <span class="day-mark"></span>
+                                    FRI
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" name="participation_days" value="saturday">
+                                    <span class="day-mark"></span>
+                                    SAT
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" name="participation_days" value="sunday">
+                                    <span class="day-mark"></span>
+                                    SUN
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="cave-radio">
+                                <input type="checkbox" name="eating_at_expedition" value="yes">
+                                <span class="radio-mark"></span>
+                                <span class="option-text">🍽️ Eating at expedition <em>(fee applies, $10/day/person)</em></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Skills -->
+                    <fieldset class="info-section">
+                        <legend>⚡ CAVING SKILLS</legend>
+                        
+                        <div class="field-group">
+                            <label>I can contribute as:</label>
+                            <div class="skills-grid">
+                                <label class="skill-option">
+                                    <input type="checkbox" name="skills" value="vertical">
+                                    <span class="skill-mark">🧗</span>
+                                    <span class="skill-text">Vertical</span>
+                                </label>
+                                <label class="skill-option">
+                                    <input type="checkbox" name="skills" value="sketcher">
+                                    <span class="skill-mark">✏️</span>
+                                    <span class="skill-text">Sketcher</span>
+                                </label>
+                                <label class="skill-option">
+                                    <input type="checkbox" name="skills" value="instrument_reader">
+                                    <span class="skill-mark">📐</span>
+                                    <span class="skill-text">Instrument Reader</span>
+                                </label>
+                                <label class="skill-option">
+                                    <input type="checkbox" name="skills" value="point_person">
+                                    <span class="skill-mark">👑</span>
+                                    <span class="skill-text">Point Person</span>
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Equipment -->
+                    <fieldset class="info-section">
+                        <legend>🎒 GEAR INVENTORY</legend>
+                        
+                        <div class="field-group">
+                            <label class="cave-radio">
+                                <input type="checkbox" name="have_instruments" value="yes">
+                                <span class="radio-mark"></span>
+                                <span class="option-text">📏 I have survey instruments</span>
+                            </label>
+                        </div>
+
+                        <div class="field-group">
+                            <label>Group gear I can share:</label>
+                            <div class="gear-grid">
+                                <label class="gear-option">
+                                    <input type="checkbox" name="group_gear" value="ropes">
+                                    <span class="gear-mark">🪢</span>
+                                    Ropes
+                                </label>
+                                <label class="gear-option">
+                                    <input type="checkbox" name="group_gear" value="rope_pads">
+                                    <span class="gear-mark">🛡️</span>
+                                    Rope Pads
+                                </label>
+                                <label class="gear-option">
+                                    <input type="checkbox" name="group_gear" value="survey_equipment">
+                                    <span class="gear-mark">📐</span>
+                                    Survey Gear
+                                </label>
+                                <label class="gear-option">
+                                    <input type="checkbox" name="group_gear" value="digging_equipment">
+                                    <span class="gear-mark">⛏️</span>
+                                    Digging Gear
+                                </label>
+                                <label class="gear-option">
+                                    <input type="checkbox" name="group_gear" value="wetsuit">
+                                    <span class="gear-mark">🤿</span>
+                                    Wetsuit
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Waiver/Due Diligence Statement -->
+                    <div style="background: #fff5f5; border: 3px solid #c53030; border-radius: 8px; padding: 20px; margin: 30px 0 20px 0;">
+                        <h3 style="color: #c53030; margin: 0 0 15px 0; font-size: 1.3rem; text-align: center;">
+                            ⚠️ IMPORTANT SAFETY NOTICE ⚠️
+                        </h3>
+                        <div style="color: #742a2a; font-size: 1rem; line-height: 1.7;">
+                            <p style="margin: 0 0 15px 0; font-weight: bold;">
+                                Cave exploration is an inherently dangerous activity that can result in serious injury or death.
+                            </p>
+                            <p style="margin: 0 0 15px 0;">
+                                By registering for this expedition, you acknowledge that you understand and accept the risks associated with cave exploration, including but not limited to: falls, rockfall, flooding, hypothermia, equipment failure, getting lost, and entrapment. You are solely responsible for your own safety and decisions while participating in this expedition.
+                            </p>
+                            <p style="margin: 0 0 15px 0;">
+                                <strong>You must have appropriate training, experience, and equipment for the caves you choose to enter.</strong> Do not attempt trips beyond your skill level. Always inform trip leaders of any medical conditions, limitations, or concerns that may affect your safety underground.
+                            </p>
+                            <p style="margin: 0; font-weight: bold; color: #c53030;">
+                                By submitting this registration, you confirm that you have read, understood, and accept these risks and responsibilities.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="submit-section">
+                        <button type="submit" class="expedition-submit">
+                            🔦 SIGN INTO EXPEDITION 🔦
+                        </button>
+                        <p class="submit-note">Join the underground adventure!</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

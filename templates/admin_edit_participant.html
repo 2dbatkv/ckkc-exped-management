@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Participant - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clean.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('admin_registration_data') }}" class="back-link">← Back to Registration Data</a>
+        
+        <header class="header">
+            <h1>✏️ Edit Participant</h1>
+            <p>Update participant registration information</p>
+        </header>
+
+        <form class="registration-form" method="POST">
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                
+                <div class="form-group">
+                    <label for="full_name">Full Name *</label>
+                    <input type="text" id="full_name" name="full_name" value="{{ participant.full_name }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" value="{{ participant.email }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone_number">Phone Number *</label>
+                    <input type="text" id="phone_number" name="phone_number" value="{{ participant.phone_number }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address *</label>
+                    <textarea id="address" name="address" required>{{ participant.address }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="emergency_contact">Emergency Contact *</label>
+                    <input type="text" id="emergency_contact" name="emergency_contact" value="{{ participant.emergency_contact }}" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Travel & Accommodation</h2>
+                
+                <div class="form-group">
+                    <label for="traveled_with">Who did you travel with?</label>
+                    <input type="text" id="traveled_with" name="traveled_with" value="{{ participant.traveled_with or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="accommodation">Accommodation *</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="accommodation" value="crf_hamilton_valley"
+                                   {% if participant.accommodation == 'crf_hamilton_valley' %}checked{% endif %}>
+                            <span class="radio-custom"></span>
+                            CRF Hamilton Valley (fee applies, $10/night/person)
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="accommodation" value="rock_cabin_camping"
+                                   {% if participant.accommodation == 'rock_cabin_camping' %}checked{% endif %}>
+                            <span class="radio-custom"></span>
+                            Rock Cabin Camping (fee applies, $4/night/person camping, $35+/night/person cabins, $13+/night/person bunkhouse)
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="accommodation" value="other"
+                                   {% if participant.accommodation == 'other' %}checked{% endif %}>
+                            <span class="radio-custom"></span>
+                            Other
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="other_accommodation">Other Accommodation (if selected above):</label>
+                    <input type="text" id="other_accommodation" name="other_accommodation" value="{{ participant.other_accommodation or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label>Participation Days *</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="tuesday"
+                                   {% if 'tuesday' in (participant.participation_days or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Tuesday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="wednesday"
+                                   {% if 'wednesday' in (participant.participation_days or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Wednesday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="thursday"
+                                   {% if 'thursday' in (participant.participation_days or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Thursday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="friday"
+                                   {% if 'friday' in (participant.participation_days or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Friday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="saturday"
+                                   {% if 'saturday' in (participant.participation_days or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Saturday
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="participation_days" value="sunday"
+                                   {% if 'sunday' in (participant.participation_days or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Sunday
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="eating_at_expedition" value="yes"
+                               {% if participant.eating_at_expedition %}checked{% endif %}>
+                        <span class="checkbox-custom"></span>
+                        I will be eating at the expedition (fee applies, $10/day/person)
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Skills & Capabilities</h2>
+                
+                <div class="form-group">
+                    <label>Will you be on trips that go into Roppel or other parts of the Mammoth Cave System? *</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="roppel_trips" value="yes" 
+                                   {% if participant.roppel_trips == 'yes' %}checked{% endif %}>
+                            <span class="radio-custom"></span>
+                            Yes - I will be on Roppel/Mammoth Cave System trips
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="roppel_trips" value="no" 
+                                   {% if participant.roppel_trips == 'no' %}checked{% endif %}>
+                            <span class="radio-custom"></span>
+                            No - I will not be on Roppel/Mammoth Cave System trips
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="crf_compass_agreement" value="yes" 
+                               {% if participant.crf_compass_agreement %}checked{% endif %}>
+                        <span class="checkbox-custom"></span>
+                        I will use the CRF compass course at Hamilton Valley facility to shoot and record frontsights and backsights for survey instruments used in Roppel or other Mammoth Cave System survey trips
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>I can contribute as: (check all that apply)</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="vertical" 
+                                   {% if 'vertical' in (participant.skills or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Vertical
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="sketcher" 
+                                   {% if 'sketcher' in (participant.skills or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Sketcher
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="instrument_reader" 
+                                   {% if 'instrument_reader' in (participant.skills or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Instrument Reader
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="skills" value="point_person" 
+                                   {% if 'point_person' in (participant.skills or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Point Person
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Equipment</h2>
+                
+                <div class="form-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="have_instruments" value="yes" 
+                               {% if participant.have_instruments %}checked{% endif %}>
+                        <span class="checkbox-custom"></span>
+                        I have survey instruments
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="instruments_details">Survey Instruments Details:</label>
+                    <textarea id="instruments_details" name="instruments_details" rows="3">{{ participant.instruments_details or '' }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Group gear I can share/loan: (check all that apply)</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="ropes" 
+                                   {% if 'ropes' in (participant.group_gear or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Ropes
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="rope_pads" 
+                                   {% if 'rope_pads' in (participant.group_gear or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Rope Pads
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="survey_equipment" 
+                                   {% if 'survey_equipment' in (participant.group_gear or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Survey Equipment
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="digging_equipment"
+                                   {% if 'digging_equipment' in (participant.group_gear or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Digging Equipment
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="wetsuit"
+                                   {% if 'wetsuit' in (participant.group_gear or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Wetsuit
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="group_gear" value="other"
+                                   {% if 'other' in (participant.group_gear or '') %}checked{% endif %}>
+                            <span class="checkbox-custom"></span>
+                            Other
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="group_gear_other_details">Other Group Gear Details:</label>
+                    <input type="text" id="group_gear_other_details" name="group_gear_other_details" value="{{ participant.group_gear_other_details or '' }}">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Additional Information</h2>
+                
+                <div class="form-group">
+                    <label for="additional_info">Anything else you would like to share?</label>
+                    <textarea id="additional_info" name="additional_info" rows="4">{{ participant.additional_info or '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Update Participant</button>
+                <a href="{{ url_for('admin_registration_data') }}" class="back-edit-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

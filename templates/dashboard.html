@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKKC October 2025 Expedition Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <img src="{{ url_for('static', filename='cave.png') }}" alt="CKKC Logo" class="expedition-logo">
+                <div class="header-text">
+                    <h1>CKKC Expedition<br>October 2025</h1>
+                    <p class="expedition-info">October 14-19, 2025 • Barren, Hart, Edmonson Counties, KY</p>
+                    <div class="participant-count">{{ participant_count }} Registered Cavers</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <div class="action-grid">
+                
+                <a href="{{ url_for('register_form') }}" class="action-card register-card">
+                    <div class="card-icon">👤</div>
+                    <h2>Sign Into Expedition</h2>
+                    <p>Register for the expedition</p>
+                </a>
+
+                <a href="{{ url_for('participants_list') }}" class="action-card participants-card">
+                    <div class="card-icon">👥</div>
+                    <h2>See Who Has Signed In</h2>
+                    <p>View all registered participants</p>
+                </a>
+
+                <a href="{{ url_for('trips_list') }}" class="action-card trips-card">
+                    <div class="card-icon">🗺️</div>
+                    <h2>View Possible Cave Trips</h2>
+                    <p>See planned cave trips (to be confirmed morning of)</p>
+                </a>
+
+
+                <a href="{{ url_for('survey_form') }}" class="action-card survey-card">
+                    <div class="card-icon">📐</div>
+                    <h2>Enter Survey Data</h2>
+                    <p>Record cave survey measurements</p>
+                </a>
+
+            </div>
+        </main>
+
+    </div>
+</body>
+</html>

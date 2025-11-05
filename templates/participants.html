@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKKC October 2025 Expedition Participants</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .participants-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .participants-header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        .participant-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #5d6d7e;
+        }
+        
+        .participant-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .participant-detail {
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .skills-list, .gear-list, .days-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .skill-tag, .gear-tag, .day-tag {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .skill-tag {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+        
+        .gear-tag {
+            background: #c6f6d5;
+            color: #276749;
+        }
+        
+        .day-tag {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .registration-time {
+            font-size: 0.9rem;
+            color: #718096;
+            font-style: italic;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 50px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .empty-state h2 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: #718096;
+        }
+        
+        @media (max-width: 768px) {
+            .participants-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .participant-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="participants-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+            <a href="{{ url_for('register_form') }}" class="back-link" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">👤 Sign In Now</a>
+        </div>
+        
+        <header class="participants-header">
+            <h1><img src="{{ url_for('static', filename='cave.png') }}" alt="Cave" style="width: 32px; height: 32px; margin-right: 10px; vertical-align: middle;"> Registered Participants</h1>
+            <p>CKKC October 2025 Expedition • October 14-19, 2025</p>
+        </header>
+
+        {% if participants %}
+            <div class="participants-grid">
+                {% for participant in participants %}
+                <div class="participant-card">
+                    <div class="participant-name">{{ participant.full_name }}</div>
+                    
+                    {% if participant.participation_days %}
+                    <div class="participant-detail">
+                        <span class="detail-label">Participation Days:</span>
+                        <div class="days-list">
+                            {% for day in participant.participation_days %}
+                                <span class="day-tag">{{ day|title }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if participant.skills %}
+                    <div class="participant-detail">
+                        <span class="detail-label">Skills:</span>
+                        <div class="skills-list">
+                            {% for skill in participant.skills %}
+                                <span class="skill-tag">{{ skill|replace('_', ' ')|title }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if participant.have_instruments %}
+                    <div class="participant-detail">
+                        <span class="detail-label">📐</span> Has survey instruments
+                    </div>
+                    {% endif %}
+                    
+                    {% if participant.group_gear %}
+                    <div class="participant-detail">
+                        <span class="detail-label">Group Gear:</span>
+                        <div class="gear-list">
+                            {% for gear in participant.group_gear %}
+                                <span class="gear-tag">{{ gear|replace('_', ' ')|title }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="registration-time">
+                        Registered: {{ participant.registration_time }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>No participants registered yet</h2>
+                <p>Be the first to sign up for the expedition!</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

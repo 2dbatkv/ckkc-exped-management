@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Details - {{ survey.cave_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .survey-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .survey-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .survey-details {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .detail-section {
+            margin-bottom: 30px;
+        }
+        
+        .detail-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .shots-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .shots-table th,
+        .shots-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .shots-table th {
+            background: #edf2f7;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .edit-btn {
+            background: #38a169;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background 0.2s ease;
+        }
+        
+        .edit-btn:hover {
+            background: #2f855a;
+        }
+    </style>
+</head>
+<body>
+    <div class="survey-container">
+        <a href="{{ url_for('admin_cave_survey_data') }}" class="back-link">← Back to Survey Data</a>
+        
+        <header class="survey-header">
+            <h1>📐 Survey Details: {{ survey.cave_name }}</h1>
+            <p>Survey #{{ survey.id }} • {{ survey.survey_date }}</p>
+        </header>
+
+        <div class="survey-details">
+            <!-- Cave & Location -->
+            <div class="detail-section">
+                <h3>🏔️ Cave & Location</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Cave Name:</span>
+                        <span>{{ survey.cave_name }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">State:</span>
+                        <span>{{ survey.state or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">County:</span>
+                        <span>{{ survey.county or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Survey Date:</span>
+                        <span>{{ survey.survey_date }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">FSB Number:</span>
+                        <span>{{ survey.fsb_number or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Area in Cave:</span>
+                        <span>{{ survey.area_in_cave or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time:</span>
+                        <span>{{ survey.time_in or 'N/A' }} - {{ survey.time_out or 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Survey Team -->
+            <div class="detail-section">
+                <h3>👥 Survey Team</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Trip Leader:</span>
+                        <span>{{ survey.trip_leader or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Book/Sketch:</span>
+                        <span>{{ survey.book_sketch_person or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Instrument Reader:</span>
+                        <span>{{ survey.instrument_reader or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tape Person:</span>
+                        <span>{{ survey.tape_person or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Point Person:</span>
+                        <span>{{ survey.point_person or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Other Members:</span>
+                        <span>{{ survey.other_team_members or 'None' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instruments -->
+            <div class="detail-section">
+                <h3>🧭 Instruments</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Compass ID:</span>
+                        <span>{{ survey.compass_id or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Inclinometer ID:</span>
+                        <span>{{ survey.inclinometer_id or 'Not specified' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Compass Readings:</span>
+                        <span>FS: {{ survey.compass_frontsight or 'N/A' }}° | BS: {{ survey.compass_backsight or 'N/A' }}°</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Inclinometer Readings:</span>
+                        <span>FS: {{ survey.inclinometer_frontsight or 'N/A' }}° | BS: {{ survey.inclinometer_backsight or 'N/A' }}°</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Survey Shots -->
+            {% if survey_shots %}
+            <div class="detail-section">
+                <h3>📏 Survey Shots ({{ survey_shots|length }} shots)</h3>
+                <table class="shots-table">
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Distance</th>
+                            <th>Azimuth FS</th>
+                            <th>Azimuth BS</th>
+                            <th>Inclination FS</th>
+                            <th>Inclination BS</th>
+                            <th>LRUD</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shot in survey_shots %}
+                        <tr>
+                            <td>{{ shot.from_station }}</td>
+                            <td>{{ shot.to_station }}</td>
+                            <td>{{ shot.distance or '-' }}</td>
+                            <td>{{ shot.azimuth_fs or '-' }}°</td>
+                            <td>{{ shot.azimuth_bs or '-' }}°</td>
+                            <td>{{ shot.inclination_fs or '-' }}°</td>
+                            <td>{{ shot.inclination_bs or '-' }}°</td>
+                            <td>L:{{ shot.left or 0 }} R:{{ shot.right or 0 }} U:{{ shot.up or 0 }} D:{{ shot.down or 0 }}</td>
+                            <td>{{ shot.note or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            <!-- Notes & Objectives -->
+            {% if survey.survey_objective %}
+            <div class="detail-section">
+                <h3>📝 Survey Objective</h3>
+                <p>{{ survey.survey_objective }}</p>
+            </div>
+            {% endif %}
+
+            {% if survey.conditions %}
+            <div class="detail-section">
+                <h3>🌤️ Conditions</h3>
+                <p>{{ survey.conditions }}</p>
+            </div>
+            {% endif %}
+
+            {% if survey.other_info %}
+            <div class="detail-section">
+                <h3>ℹ️ Additional Information</h3>
+                <p>{{ survey.other_info }}</p>
+            </div>
+            {% endif %}
+
+            <div class="detail-section">
+                <h3>📅 Metadata</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Created:</span>
+                        <span>{{ survey.created_date }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Survey ID:</span>
+                        <span>#{{ survey.id }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{{ url_for('admin_survey_edit', survey_id=survey.id) }}" class="edit-btn">✏️ Edit Survey</a>
+        </div>
+    </div>
+</body>
+</html>

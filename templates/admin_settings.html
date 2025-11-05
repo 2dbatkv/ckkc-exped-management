@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .settings-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .settings-header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .settings-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-category {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .settings-category:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-transform: capitalize;
+            border-left: 4px solid #5d6d7e;
+            padding-left: 15px;
+        }
+        
+        .settings-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .setting-item {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .setting-item:hover {
+            border-color: #5d6d7e;
+        }
+        
+        .setting-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .setting-description {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .setting-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        .setting-input:focus {
+            outline: none;
+            border-color: #5d6d7e;
+            box-shadow: 0 0 0 3px rgba(93, 109, 126, 0.1);
+        }
+        
+        .setting-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .setting-checkbox input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+        
+        .setting-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .category-icons {
+            margin-right: 8px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+        
+        .warning-box strong {
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <a href="{{ url_for('admin_dashboard') }}" class="back-link">← Back to Admin Dashboard</a>
+        
+        <header class="settings-header">
+            <h1>⚙️ System Settings</h1>
+            <p>Configure expedition parameters and database settings</p>
+        </header>
+
+        <form class="settings-form" method="POST" action="{{ url_for('update_settings') }}">
+            {% for category, settings in settings_by_category.items() %}
+            <div class="settings-category">
+                <h2 class="category-title">
+                    {% if category == 'expedition' %}🏔️ 
+                    {% elif category == 'registration' %}👥 
+                    {% elif category == 'security' %}🔒 
+                    {% elif category == 'database' %}💾 
+                    {% elif category == 'survey' %}📐 
+                    {% elif category == 'trips' %}🗺️ 
+                    {% elif category == 'safety' %}⚠️ 
+                    {% endif %}
+                    {{ category | title }} Settings
+                </h2>
+                
+                {% if category == 'security' %}
+                <div class="warning-box">
+                    <strong>⚠️ Security Warning:</strong> Changing the admin passcode will require you to log in again with the new passcode.
+                </div>
+                {% endif %}
+                
+                <div class="settings-grid">
+                    {% for setting in settings %}
+                    <div class="setting-item">
+                        <label class="setting-label" for="{{ setting.key }}">
+                            {{ setting.key | replace('_', ' ') | title }}
+                        </label>
+                        <div class="setting-description">{{ setting.description }}</div>
+                        
+                        {% if setting.key in ['registration_open', 'auto_calculate_variance', 'require_leader_approval', 'emergency_contact_required'] %}
+                            <div class="setting-checkbox">
+                                <input type="checkbox" 
+                                       id="{{ setting.key }}" 
+                                       name="{{ setting.key }}" 
+                                       value="true"
+                                       {{ 'checked' if setting.value == 'true' else '' }}>
+                                <label for="{{ setting.key }}">Enable this option</label>
+                            </div>
+                        {% elif setting.key == 'backup_frequency' %}
+                            <select class="setting-select" id="{{ setting.key }}" name="{{ setting.key }}">
+                                <option value="hourly" {{ 'selected' if setting.value == 'hourly' else '' }}>Hourly</option>
+                                <option value="daily" {{ 'selected' if setting.value == 'daily' else '' }}>Daily</option>
+                                <option value="weekly" {{ 'selected' if setting.value == 'weekly' else '' }}>Weekly</option>
+                                <option value="manual" {{ 'selected' if setting.value == 'manual' else '' }}>Manual Only</option>
+                            </select>
+                        {% elif setting.key == 'survey_unit_system' %}
+                            <select class="setting-select" id="{{ setting.key }}" name="{{ setting.key }}">
+                                <option value="metric" {{ 'selected' if setting.value == 'metric' else '' }}>Metric (meters, degrees)</option>
+                                <option value="imperial" {{ 'selected' if setting.value == 'imperial' else '' }}>Imperial (feet, degrees)</option>
+                            </select>
+                        {% elif setting.key in ['max_participants', 'default_trip_duration'] %}
+                            <input type="number" 
+                                   class="setting-input" 
+                                   id="{{ setting.key }}" 
+                                   name="{{ setting.key }}" 
+                                   value="{{ setting.value }}"
+                                   min="1" max="999">
+                        {% elif setting.key == 'admin_passcode' %}
+                            <input type="password" 
+                                   class="setting-input" 
+                                   id="{{ setting.key }}" 
+                                   name="{{ setting.key }}" 
+                                   value="{{ setting.value }}"
+                                   placeholder="Enter new admin passcode">
+                        {% else %}
+                            <input type="text" 
+                                   class="setting-input" 
+                                   id="{{ setting.key }}" 
+                                   name="{{ setting.key }}" 
+                                   value="{{ setting.value }}">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Save Settings</button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                <button type="button" class="btn btn-danger" onclick="resetSettings()">🔄 Reset to Defaults</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function resetSettings() {
+            if (confirm('Are you sure you want to reset all settings to default values? This action cannot be undone.')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ url_for("reset_settings") }}';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        
+        // Add confirmation for passcode changes
+        document.getElementById('admin_passcode').addEventListener('change', function() {
+            if (this.value !== this.defaultValue) {
+                alert('Note: Changing the admin passcode will require you to log in again with the new passcode.');
+            }
+        });
+    </script>
+</body>
+</html>

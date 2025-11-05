@@ -1,0 +1,50 @@
+# Environment and secrets
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Database
+database/
+*.db
+*.sqlite
+*.sqlite3
+*.sql.backup
+backup_*.sql
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Conversion scripts (keep in repo for reference but not needed for deployment)
+app_original.py
+convert.py
+simple_convert.py
+fix_connections.py
+fix_fetch.py

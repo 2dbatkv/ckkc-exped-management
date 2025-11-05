@@ -1,0 +1,238 @@
+/* Dashboard Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-header {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+    font-size: 3rem;
+    color: #2d3748;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.expedition-info {
+    font-size: 1.4rem;
+    color: #4a5568;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+}
+
+.expedition-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.header-text {
+    text-align: center;
+}
+
+.participant-count {
+    background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: inline-block;
+    box-shadow: 0 5px 15px rgba(93, 109, 126, 0.3);
+}
+
+.dashboard-main {
+    margin-bottom: 40px;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.action-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.action-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-color: #5d6d7e;
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.action-card h2 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.action-card p {
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Specific card colors */
+.register-card:hover {
+    border-color: #48bb78;
+}
+
+.register-card .card-icon {
+    color: #48bb78;
+}
+
+.participants-card:hover {
+    border-color: #ed8936;
+}
+
+.participants-card .card-icon {
+    color: #ed8936;
+}
+
+.trips-card:hover {
+    border-color: #4299e1;
+}
+
+.trips-card .card-icon {
+    color: #4299e1;
+}
+
+.objectives-card:hover {
+    border-color: #9f7aea;
+}
+
+.objectives-card .card-icon {
+    color: #9f7aea;
+}
+
+.survey-card:hover {
+    border-color: #38b2ac;
+}
+
+.survey-card .card-icon {
+    color: #38b2ac;
+}
+
+.admin-card:hover {
+    border-color: #e53e3e;
+}
+
+.admin-card .card-icon {
+    color: #e53e3e;
+}
+
+.dashboard-footer {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.design-selector p {
+    color: #4a5568;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.style-link {
+    color: #5d6d7e;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.style-link:hover {
+    background: rgba(93, 109, 126, 0.1);
+    color: #4a5568;
+}
+
+.design-selector span {
+    color: #a0aec0;
+    margin: 0 10px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+    
+    .dashboard-header {
+        padding: 25px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2.2rem;
+    }
+    
+    .expedition-info {
+        font-size: 1.2rem;
+    }
+    
+    .action-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .action-card {
+        padding: 25px;
+    }
+    
+    .card-icon {
+        font-size: 2.5rem;
+    }
+    
+    .action-card h2 {
+        font-size: 1.3rem;
+    }
+}

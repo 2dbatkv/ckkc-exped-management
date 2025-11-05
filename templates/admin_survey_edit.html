@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Survey - {{ survey.cave_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .edit-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .edit-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #5d6d7e 0%, #8b9cb5 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .edit-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .submit-btn {
+            background: #38a169;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-right: 10px;
+        }
+        
+        .submit-btn:hover {
+            background: #2f855a;
+        }
+        
+        .cancel-btn {
+            background: #718096;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cancel-btn:hover {
+            background: #4a5568;
+        }
+        
+        .readonly-info {
+            background: #f0f8ff;
+            border: 1px solid #90cdf4;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #2c5aa0;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <a href="{{ url_for('admin_survey_view', survey_id=survey.id) }}" class="back-link">← Back to Survey Details</a>
+        
+        <header class="edit-header">
+            <h1>✏️ Edit Survey: {{ survey.cave_name }}</h1>
+            <p>Survey #{{ survey.id }} • Last updated: {{ survey.created_date }}</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="readonly-info">
+            <strong>Note:</strong> This form allows editing basic survey information. To modify survey shots data, advanced editing tools are required.
+        </div>
+
+        <form method="POST" class="edit-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cave_name">Cave Name *</label>
+                    <input type="text" id="cave_name" name="cave_name" value="{{ survey.cave_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="survey_date">Survey Date *</label>
+                    <input type="date" id="survey_date" name="survey_date" value="{{ survey.survey_date }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="fsb_number">FSB Number</label>
+                <input type="text" id="fsb_number" name="fsb_number" value="{{ survey.fsb_number or '' }}" placeholder="Field Survey Book number (optional)">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" id="state" name="state" value="{{ survey.state or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="county">County</label>
+                    <input type="text" id="county" name="county" value="{{ survey.county or '' }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="area_in_cave">Area in Cave</label>
+                <input type="text" id="area_in_cave" name="area_in_cave" value="{{ survey.area_in_cave or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="survey_objective">Survey Objective</label>
+                <textarea id="survey_objective" name="survey_objective">{{ survey.survey_objective or '' }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="region">Region</label>
+                    <input type="text" id="region" name="region" value="{{ survey.region or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="time_in">Time In</label>
+                    <input type="time" id="time_in" name="time_in" value="{{ survey.time_in or '' }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="time_out">Time Out</label>
+                    <input type="time" id="time_out" name="time_out" value="{{ survey.time_out or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="conditions">Conditions</label>
+                    <input type="text" id="conditions" name="conditions" value="{{ survey.conditions or '' }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="other_info">Other Information</label>
+                <textarea id="other_info" name="other_info">{{ survey.other_info or '' }}</textarea>
+            </div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Survey Team</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="trip_leader">Trip/Survey Leader</label>
+                    <input type="text" id="trip_leader" name="trip_leader" value="{{ survey.trip_leader or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="book_sketch_person">Book/Sketch Person</label>
+                    <input type="text" id="book_sketch_person" name="book_sketch_person" value="{{ survey.book_sketch_person or '' }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="instrument_reader">Instrument Reader</label>
+                    <input type="text" id="instrument_reader" name="instrument_reader" value="{{ survey.instrument_reader or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="tape_person">Tape Person</label>
+                    <input type="text" id="tape_person" name="tape_person" value="{{ survey.tape_person or '' }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="point_person">Point Person</label>
+                    <input type="text" id="point_person" name="point_person" value="{{ survey.point_person or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="other_team_members">Other Team Members</label>
+                    <input type="text" id="other_team_members" name="other_team_members" value="{{ survey.other_team_members or '' }}">
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Instruments</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="compass_id">Compass ID</label>
+                    <input type="text" id="compass_id" name="compass_id" value="{{ survey.compass_id or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="inclinometer_id">Inclinometer ID</label>
+                    <input type="text" id="inclinometer_id" name="inclinometer_id" value="{{ survey.inclinometer_id or '' }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="compass_frontsight">Compass Frontsight (>180°)</label>
+                    <input type="number" id="compass_frontsight" name="compass_frontsight" step="0.1" value="{{ survey.compass_frontsight or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="compass_backsight">Compass Backsight (<180°)</label>
+                    <input type="number" id="compass_backsight" name="compass_backsight" step="0.1" value="{{ survey.compass_backsight or '' }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="inclinometer_frontsight">Inclinometer Frontsight</label>
+                    <input type="number" id="inclinometer_frontsight" name="inclinometer_frontsight" step="0.1" value="{{ survey.inclinometer_frontsight or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="inclinometer_backsight">Inclinometer Backsight</label>
+                    <input type="number" id="inclinometer_backsight" name="inclinometer_backsight" step="0.1" value="{{ survey.inclinometer_backsight or '' }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="calibration_notes">Calibration Notes</label>
+                <textarea id="calibration_notes" name="calibration_notes">{{ survey.calibration_notes or '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="additional_equipment">Additional Equipment</label>
+                <textarea id="additional_equipment" name="additional_equipment">{{ survey.additional_equipment or '' }}</textarea>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label>
+                    <input type="checkbox" name="crf_compass_course" {% if survey.crf_compass_course %}checked{% endif %}>
+                    Instruments read on CRF Compass Course
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="instruments_crf_course" {% if survey.instruments_crf_course %}checked{% endif %}>
+                    Instruments calibrated on HV Compass Course
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="data_accuracy" {% if survey.data_accuracy %}checked{% endif %}>
+                    Data accuracy confirmed
+                </label>
+            </div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Survey Shots</h3>
+            <div class="readonly-info">
+                <strong>Note:</strong> You can edit existing survey shots below. To add or delete shots, use the table entry interface.
+            </div>
+
+            <div style="overflow-x: auto; margin-bottom: 20px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="background: #667eea; color: white;">
+                            <th style="padding: 8px; border: 1px solid #ddd;">From</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">To</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Distance</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Az FS</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Az BS</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Inc FS</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Inc BS</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Left</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Right</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Up</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Down</th>
+                            <th style="padding: 8px; border: 1px solid #ddd;">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if survey_shots %}
+                            {% for shot in survey_shots %}
+                            <tr>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="text" name="from_station[]" value="{{ shot.from_station or '' }}" style="width: 100%; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="text" name="to_station[]" value="{{ shot.to_station or '' }}" style="width: 100%; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="distance[]" value="{{ shot.distance or '' }}" step="0.01" style="width: 80px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="azimuth_fs[]" value="{{ shot.azimuth_fs or '' }}" step="0.1" style="width: 70px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="azimuth_bs[]" value="{{ shot.azimuth_bs or '' }}" step="0.1" style="width: 70px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="inclination_fs[]" value="{{ shot.inclination_fs or '' }}" step="0.1" style="width: 70px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="inclination_bs[]" value="{{ shot.inclination_bs or '' }}" step="0.1" style="width: 70px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="left[]" value="{{ shot.left or '' }}" step="0.01" style="width: 60px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="right[]" value="{{ shot.right or '' }}" step="0.01" style="width: 60px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="up[]" value="{{ shot.up or '' }}" step="0.01" style="width: 60px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="number" name="down[]" value="{{ shot.down or '' }}" step="0.01" style="width: 60px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                                <td style="padding: 5px; border: 1px solid #ddd;">
+                                    <input type="text" name="notes[]" value="{{ shot.notes or '' }}" style="width: 150px; padding: 4px; border: 1px solid #ccc;">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="12" style="padding: 20px; text-align: center; color: #718096;">No survey shots recorded</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group" style="margin-top: 30px;">
+                <button type="submit" class="submit-btn">💾 Save Changes</button>
+                <a href="{{ url_for('admin_survey_view', survey_id=survey.id) }}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
