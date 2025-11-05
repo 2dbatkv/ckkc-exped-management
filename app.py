@@ -58,16 +58,35 @@ def init_connection_pool():
         raise
 
 def get_db_connection():
-    """Get a database connection from pool"""
+    """Get a database connection from pool with validation"""
     if db_pool is None:
         raise Exception("Connection pool not initialized")
     conn = db_pool.getconn()
+    # Test the connection to ensure it's not stale
+    try:
+        with conn.cursor() as test_cursor:
+            test_cursor.execute('SELECT 1')
+    except (psycopg2.OperationalError, psycopg2.InterfaceError):
+        # Connection is stale, close it and get a new one
+        try:
+            conn.close()
+        except:
+            pass
+        conn = db_pool.getconn()
     return conn
 
-def return_connection(conn):
-    """Return connection to pool"""
+def return_connection(conn, error=False):
+    """Return connection to pool or close if error occurred"""
     if db_pool and conn:
-        db_pool.putconn(conn)
+        if error:
+            # Close connection on error, don't return to pool
+            try:
+                conn.close()
+            except:
+                pass
+            db_pool.putconn(conn, close=True)
+        else:
+            db_pool.putconn(conn)
 
 def get_cursor(conn):
     """Get cursor with dict-like row factory"""
@@ -105,14 +124,22 @@ def calculate_variance(fs_value, bs_value):
 @app.route('/')
 def dashboard():
     """Main dashboard"""
-    # Get participant count
-    conn = get_db_connection()
-    cursor = get_cursor(conn)
-    cursor.execute('SELECT COUNT(*) as count FROM participants')
-    participant_count = cursor.fetchone()['count']
-    return_connection(conn)
-    
-    return render_template('dashboard.html', participant_count=participant_count)
+    conn = None
+    try:
+        # Get participant count
+        conn = get_db_connection()
+        cursor = get_cursor(conn)
+        cursor.execute('SELECT COUNT(*) as count FROM participants')
+        participant_count = cursor.fetchone()['count']
+        return render_template('dashboard.html', participant_count=participant_count)
+    except Exception as e:
+        app.logger.error(f"Error in dashboard: {e}")
+        if conn:
+            return_connection(conn, error=True)
+        return render_template('dashboard.html', participant_count=0)
+    finally:
+        if conn:
+            return_connection(conn)
 
 @app.route('/register')
 def register_form():
@@ -1980,13 +2007,13 @@ def reset_settings():
 @app.route('/health')
 def health_check():
     """Health check endpoint for monitoring and load balancers"""
+    conn = None
     try:
         # Test database connection
         conn = get_db_connection()
         cursor = get_cursor(conn)
         cursor.execute('SELECT 1')
         cursor.fetchone()
-        return_connection(conn)
 
         return jsonify({
             'status': 'healthy',
@@ -1994,12 +2021,18 @@ def health_check():
             'timestamp': datetime.now().isoformat()
         }), 200
     except Exception as e:
+        app.logger.error(f"Health check failed: {e}")
+        if conn:
+            return_connection(conn, error=True)
         return jsonify({
             'status': 'unhealthy',
             'database': 'unhealthy',
             'error': str(e),
             'timestamp': datetime.now().isoformat()
         }), 503
+    finally:
+        if conn:
+            return_connection(conn)
 
 if __name__ == '__main__':
     init_connection_pool()
